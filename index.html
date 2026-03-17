@@ -1,0 +1,2497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Business English Quizes (A2+) · Complete Exercise Book</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; background: #f0f4f8; color: #1e293b; min-height: 100vh; }
+
+  .app-header {
+    background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+    color: #fff;
+    padding: 20px 24px 16px;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(37,99,235,0.3);
+  }
+  .app-header h1 { font-size: 1.6rem; font-weight: 700; letter-spacing: -0.02em; }
+  .app-header p { font-size: 0.85rem; opacity: 0.8; margin-top: 4px; }
+  .student-info {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 14px;
+  }
+  .student-info label { font-size: 0.78rem; font-weight: 600; opacity: 0.85; letter-spacing: 0.05em; text-transform: uppercase; display: block; margin-bottom: 4px; text-align: left; }
+  .student-info input {
+    background: rgba(255,255,255,0.15);
+    border: 1.5px solid rgba(255,255,255,0.4);
+    border-radius: 8px;
+    padding: 7px 12px;
+    font-size: 0.9rem;
+    color: #fff;
+    font-family: inherit;
+    outline: none;
+    transition: all 0.15s;
+    width: 200px;
+  }
+  .student-info input::placeholder { color: rgba(255,255,255,0.55); }
+  .student-info input:focus { background: rgba(255,255,255,0.25); border-color: rgba(255,255,255,0.8); }
+
+  .main-nav {
+    background: #fff;
+    padding: 10px 16px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    justify-content: center;
+    border-bottom: 2px solid #e2e8f0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  }
+  .nav-btn {
+    background: #f1f5f9;
+    border: 1px solid #cbd5e1;
+    border-radius: 20px;
+    padding: 6px 14px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    color: #475569;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+  .nav-btn:hover { background: #dbeafe; border-color: #93c5fd; color: #1d4ed8; }
+  .nav-btn.active { background: #2563eb; border-color: #2563eb; color: #fff; }
+  .nav-btn.quiz-btn { background: #f59e0b; border-color: #d97706; color: #fff; }
+  .nav-btn.quiz-btn:hover { background: #d97706; }
+  .nav-btn.quiz-btn.active { background: #d97706; border-color: #b45309; }
+
+  .content-area { max-width: 900px; margin: 0 auto; padding: 20px 16px; }
+
+  .unit-panel { display: none; }
+  .unit-panel.active { display: block; }
+
+  .unit-header {
+    border-radius: 14px;
+    overflow: hidden;
+    margin-bottom: 16px;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.1);
+  }
+  .unit-banner-css {
+    width: 100%; height: 170px;
+    display: flex; align-items: center; justify-content: center;
+    gap: 18px; position: relative; overflow: hidden;
+  }
+  .unit-banner-css .banner-emoji {
+    font-size: 5rem; line-height: 1; filter: drop-shadow(0 2px 8px rgba(0,0,0,0.25));
+    animation: floatEmoji 3s ease-in-out infinite;
+  }
+  .unit-banner-css .banner-words {
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .unit-banner-css .banner-chip {
+    background: rgba(255,255,255,0.25); color: #fff;
+    border: 1.5px solid rgba(255,255,255,0.5);
+    border-radius: 20px; padding: 4px 14px; font-size: 0.82rem;
+    font-weight: 600; backdrop-filter: blur(4px); white-space: nowrap;
+  }
+  @keyframes floatEmoji {
+    0%,100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+  .unit-header-text {
+    padding: 14px 18px;
+    border-left: 5px solid #2563eb;
+    background: #fff;
+  }
+  .unit-header h2 { font-size: 1.2rem; color: #1e3a8a; font-weight: 700; }
+  .unit-header p { font-size: 0.85rem; color: #64748b; margin-top: 4px; }
+
+  .sub-tabs {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+  .sub-tab {
+    background: #f1f5f9;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    padding: 7px 16px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    color: #475569;
+    transition: all 0.15s;
+  }
+  .sub-tab:hover { background: #dbeafe; color: #1d4ed8; }
+  .sub-tab.active { background: #2563eb; color: #fff; border-color: #2563eb; }
+
+  .sub-panel { display: none; }
+  .sub-panel.active { display: block; }
+
+  .card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    border: 1px solid #e2e8f0;
+  }
+  .card h3 { font-size: 1rem; color: #1e3a8a; margin-bottom: 12px; font-weight: 700; }
+
+  .word-box {
+    background: #f8fafc;
+    border: 2px dashed #cbd5e1;
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 14px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    min-height: 44px;
+  }
+  .word-chip {
+    background: #dbeafe;
+    border: 2px solid #93c5fd;
+    border-radius: 20px;
+    padding: 4px 12px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    color: #1d4ed8;
+    transition: all 0.15s;
+    user-select: none;
+  }
+  .word-chip:hover { background: #bfdbfe; }
+  .word-chip.selected { background: #2563eb; color: #fff; border-color: #1d4ed8; }
+  .word-chip.used { opacity: 0.35; pointer-events: none; }
+
+  .fill-sentence { margin-bottom: 10px; font-size: 0.92rem; line-height: 2; }
+  .gap {
+    display: inline-block;
+    min-width: 100px;
+    border-bottom: 2px solid #2563eb;
+    padding: 1px 8px;
+    margin: 0 4px;
+    cursor: pointer;
+    color: #2563eb;
+    font-weight: 600;
+    border-radius: 4px;
+    transition: all 0.15s;
+    background: transparent;
+  }
+  .gap:hover { background: #dbeafe; }
+  .gap.correct { background: #dcfce7; border-bottom-color: #16a34a; color: #15803d; cursor: default; }
+  .gap.incorrect { background: #fee2e2; border-bottom-color: #dc2626; color: #dc2626; }
+  .gap.filled { background: #eff6ff; }
+
+  .mcq-question { margin-bottom: 18px; }
+  .mcq-question p { font-size: 0.92rem; margin-bottom: 8px; font-weight: 500; }
+  .mcq-options { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  @media (max-width: 500px) { .mcq-options { grid-template-columns: 1fr; } }
+  .mcq-opt {
+    background: #f8fafc;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.15s;
+    text-align: left;
+    font-family: inherit;
+    width: 100%;
+  }
+  .mcq-opt:hover { border-color: #93c5fd; background: #eff6ff; }
+  .mcq-opt.correct { border-color: #16a34a; background: #dcfce7; color: #15803d; font-weight: 600; }
+  .mcq-opt.incorrect { border-color: #dc2626; background: #fee2e2; color: #dc2626; }
+  .mcq-opt.disabled { pointer-events: none; }
+  .correct-answer { font-size: 0.82rem; color: #64748b; font-style: italic; margin-top: 4px; }
+
+  .match-container { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  @media (max-width: 500px) { .match-container { grid-template-columns: 1fr; } }
+  .match-col { display: flex; flex-direction: column; gap: 6px; }
+  .match-item {
+    background: #f8fafc;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.15s;
+    min-height: 40px;
+    display: flex;
+    align-items: center;
+  }
+  .match-item:hover { border-color: #93c5fd; background: #eff6ff; }
+  .match-item.selected { border-color: #2563eb; background: #dbeafe; font-weight: 600; }
+  .match-item.matched-correct { border-color: #16a34a; background: #dcfce7; color: #15803d; pointer-events: none; }
+  .match-item.matched-incorrect { border-color: #dc2626; background: #fee2e2; color: #dc2626; pointer-events: none; }
+
+  .text-input {
+    border: 2px solid #cbd5e1;
+    border-radius: 6px;
+    padding: 4px 10px;
+    font-size: 0.88rem;
+    width: 130px;
+    margin: 0 4px;
+    outline: none;
+    transition: all 0.15s;
+    font-family: inherit;
+  }
+  .text-input:focus { border-color: #2563eb; }
+  .text-input.correct { border-color: #16a34a; background: #dcfce7; color: #15803d; }
+  .text-input.incorrect { border-color: #dc2626; background: #fee2e2; color: #dc2626; }
+
+  .score-display {
+    background: #eff6ff;
+    border: 2px solid #bfdbfe;
+    border-radius: 8px;
+    padding: 10px 16px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #1d4ed8;
+    margin-top: 10px;
+    display: none;
+  }
+
+  .btn {
+    background: #2563eb;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+    margin-top: 10px;
+    margin-right: 8px;
+    font-family: inherit;
+  }
+  .btn:hover { background: #1d4ed8; }
+  .btn.btn-secondary { background: #64748b; }
+  .btn.btn-secondary:hover { background: #475569; }
+  .btn.btn-check { background: #059669; }
+  .btn.btn-check:hover { background: #047857; }
+
+  .label { font-size: 0.78rem; color: #64748b; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; display: block; }
+
+  /* QUIZ */
+  .quiz-progress-bar { background: #e2e8f0; border-radius: 99px; height: 8px; margin-bottom: 16px; overflow: hidden; }
+  .quiz-progress-fill { background: linear-gradient(90deg, #2563eb, #7c3aed); height: 100%; border-radius: 99px; transition: width 0.3s; }
+
+  .overall-progress-wrap {
+    background: #fff;
+    border-bottom: 2px solid #e2e8f0;
+    padding: 10px 20px;
+    text-align: center;
+  }
+  .overall-progress-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 6px;
+  }
+  .overall-progress-bar {
+    background: #e2e8f0;
+    border-radius: 99px;
+    height: 12px;
+    max-width: 600px;
+    margin: 0 auto 5px;
+    overflow: hidden;
+  }
+  .overall-progress-fill {
+    background: linear-gradient(90deg, #16a34a, #22c55e);
+    height: 100%;
+    border-radius: 99px;
+    transition: width 0.5s ease;
+    min-width: 0;
+  }
+  .overall-progress-pct {
+    font-size: 0.8rem;
+    color: #475569;
+    font-weight: 700;
+  }
+  .quiz-meta { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; font-size: 0.85rem; color: #64748b; font-weight: 600; }
+  .quiz-question-card { background: #fff; border-radius: 12px; padding: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border: 1px solid #e2e8f0; margin-bottom: 16px; }
+  .quiz-q-text { font-size: 1rem; font-weight: 600; margin-bottom: 16px; color: #1e293b; line-height: 1.5; }
+  .quiz-options { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  @media (max-width: 500px) { .quiz-options { grid-template-columns: 1fr; } }
+  .quiz-opt {
+    background: #f8fafc;
+    border: 2px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 0.88rem;
+    cursor: pointer;
+    transition: all 0.15s;
+    text-align: left;
+    font-family: inherit;
+    width: 100%;
+  }
+  .quiz-opt:hover { border-color: #93c5fd; background: #eff6ff; }
+  .quiz-opt.correct { border-color: #16a34a; background: #dcfce7; color: #15803d; font-weight: 600; }
+  .quiz-opt.incorrect { border-color: #dc2626; background: #fee2e2; color: #dc2626; }
+  .quiz-opt.disabled { pointer-events: none; }
+  .quiz-feedback { margin-top: 12px; font-size: 0.88rem; font-weight: 600; padding: 8px 12px; border-radius: 8px; }
+  .quiz-feedback.ok { background: #dcfce7; color: #15803d; }
+  .quiz-feedback.no { background: #fee2e2; color: #dc2626; }
+  .quiz-nav { display: flex; gap: 10px; align-items: center; margin-top: 10px; }
+
+  .result-screen { background: #fff; border-radius: 16px; padding: 40px 30px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border: 1px solid #e2e8f0; }
+  .result-emoji { font-size: 4rem; margin-bottom: 12px; }
+  .result-score { font-size: 2.5rem; font-weight: 800; color: #1e3a8a; }
+  .result-label { font-size: 1rem; color: #64748b; margin-top: 6px; }
+  .result-msg { font-size: 1rem; font-weight: 600; color: #374151; margin-top: 16px; background: #f8fafc; border-radius: 10px; padding: 12px 20px; }
+
+  hr { border: none; border-top: 1px solid #e2e8f0; margin: 16px 0; }
+
+  /* ============================================================
+     CROSS-DEVICE COMPATIBILITY — Mobile · Tablet · iPad · Laptop
+     ============================================================ */
+
+  /* Prevent font size adjustment on orientation change (iOS/Android) */
+  html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; scroll-behavior: smooth; }
+
+  /* Remove blue tap-flash on iOS and Android */
+  * { -webkit-tap-highlight-color: transparent; }
+
+  /* Prevent double-tap zoom delay on all interactive elements */
+  button, input, a,
+  .word-chip, .match-item, .gap,
+  .mcq-opt, .quiz-opt, .nav-btn, .sub-tab { touch-action: manipulation; }
+
+  /* Respect prefers-reduced-motion (accessibility) */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+  }
+
+  /* Safe area insets for notched / home-bar phones (iPhone X+, Android cutouts) */
+  @supports (padding: env(safe-area-inset-top)) {
+    .app-header { padding-top: max(20px, env(safe-area-inset-top)); }
+    .main-nav {
+      padding-left: max(16px, env(safe-area-inset-left));
+      padding-right: max(16px, env(safe-area-inset-right));
+    }
+    .content-area {
+      padding-left: max(16px, env(safe-area-inset-left));
+      padding-right: max(16px, env(safe-area-inset-right));
+      padding-bottom: max(20px, env(safe-area-inset-bottom));
+    }
+  }
+
+  /* Minimum 44 × 44 px touch targets (Apple HIG / WCAG 2.5.5) */
+  .btn, .nav-btn, .mcq-opt, .quiz-opt, .match-item { min-height: 44px; }
+  .sub-tab { min-height: 40px; }
+  .word-chip { min-height: 36px; display: inline-flex; align-items: center; }
+
+  /* ── Small phones  ≤ 479 px ─────────────────────────────── */
+  @media (max-width: 479px) {
+
+    /* Header */
+    .app-header { padding: 14px 14px 12px; }
+    .app-header h1 { font-size: 1.1rem; }
+    .app-header p  { font-size: 0.75rem; }
+    .student-info  { flex-direction: column; align-items: center; gap: 8px; margin-top: 10px; }
+    .student-info input { width: 100%; max-width: 300px; font-size: 16px; /* prevents iOS auto-zoom */ }
+
+    /* Navigation */
+    .main-nav { padding: 7px 10px; gap: 4px; }
+    .nav-btn { font-size: 0.68rem; padding: 5px 8px; border-radius: 14px; min-height: 32px; white-space: nowrap; }
+
+    /* Progress bar */
+    .overall-progress-wrap { padding: 7px 12px; }
+    .overall-progress-label { font-size: 0.67rem; margin-bottom: 4px; }
+    .overall-progress-bar  { height: 9px; }
+    .overall-progress-pct  { font-size: 0.7rem; }
+
+    /* Content */
+    .content-area { padding: 10px 10px; }
+
+    /* Unit banner */
+    .unit-banner-css { height: 100px; gap: 10px; }
+    .unit-banner-css .banner-emoji { font-size: 2.4rem; }
+    .unit-banner-css .banner-chip  { font-size: 0.65rem; padding: 2px 8px; }
+    .unit-header-text { padding: 10px 12px; }
+    .unit-header h2 { font-size: 0.9rem; }
+    .unit-header p  { font-size: 0.75rem; }
+
+    /* Sub-tabs — stretch to fill width equally */
+    .sub-tabs { gap: 4px; }
+    .sub-tab  { font-size: 0.72rem; padding: 7px 8px; flex: 1; text-align: center; }
+
+    /* Cards */
+    .card    { padding: 12px 10px; margin-bottom: 12px; }
+    .card h3 { font-size: 0.85rem; }
+    .label   { font-size: 0.69rem; }
+
+    /* Word bank */
+    .word-box  { padding: 10px; min-height: 50px; }
+    .word-chip { padding: 7px 11px; font-size: 0.79rem; }
+
+    /* Fill sentences */
+    .fill-sentence { font-size: 0.82rem; line-height: 2.4; }
+    .gap { min-width: 68px; font-size: 0.79rem; }
+    .text-input { width: 84px; padding: 5px 7px; font-size: 16px; }
+
+    /* Match — stack to 1 column with labeled sections */
+    .match-container { grid-template-columns: 1fr; gap: 0; }
+    .match-col:first-child::before {
+      content: 'Select from ↓'; display: block;
+      font-size: 0.65rem; font-weight: 700; color: #64748b;
+      text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 5px;
+    }
+    .match-col:last-child {
+      border-top: 2px dashed #e2e8f0;
+      margin-top: 10px; padding-top: 10px;
+    }
+    .match-col:last-child::before {
+      content: 'Match to ↓'; display: block;
+      font-size: 0.65rem; font-weight: 700; color: #16a34a;
+      text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 5px;
+    }
+    .match-item { padding: 9px 10px; font-size: 0.79rem; }
+
+    /* MCQ */
+    .mcq-options { grid-template-columns: 1fr; }
+    .mcq-opt { padding: 10px 10px; font-size: 0.82rem; }
+    .correct-answer { font-size: 0.76rem; }
+
+    /* Buttons & score */
+    .btn { padding: 10px 14px; font-size: 0.81rem; }
+    .score-display { font-size: 0.82rem; padding: 8px 12px; }
+
+    /* Quiz */
+    .quiz-question-card { padding: 14px 11px; }
+    .quiz-q-text { font-size: 0.87rem; }
+    .quiz-options { grid-template-columns: 1fr; }
+    .quiz-opt { padding: 10px 10px; font-size: 0.82rem; }
+    .quiz-feedback { font-size: 0.81rem; }
+    .quiz-meta { font-size: 0.77rem; }
+    .quiz-nav { flex-wrap: wrap; }
+
+    /* Results */
+    .result-screen  { padding: 22px 14px; }
+    .result-emoji   { font-size: 2.8rem; }
+    .result-score   { font-size: 1.8rem; }
+    .result-msg     { font-size: 0.85rem; padding: 10px 14px; }
+  }
+
+  /* ── Large phones & small tablets  480 – 767 px ──────────── */
+  @media (min-width: 480px) and (max-width: 767px) {
+
+    .app-header h1 { font-size: 1.3rem; }
+    .student-info input { width: 170px; font-size: 16px; }
+
+    .unit-banner-css { height: 130px; }
+    .unit-banner-css .banner-emoji { font-size: 3.4rem; }
+
+    .content-area { padding: 14px 14px; }
+
+    /* Match — stack to 1 column */
+    .match-container { grid-template-columns: 1fr; gap: 0; }
+    .match-col:first-child::before {
+      content: 'Select from ↓'; display: block;
+      font-size: 0.67rem; font-weight: 700; color: #64748b;
+      text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 5px;
+    }
+    .match-col:last-child {
+      border-top: 2px dashed #e2e8f0;
+      margin-top: 10px; padding-top: 10px;
+    }
+    .match-col:last-child::before {
+      content: 'Match to ↓'; display: block;
+      font-size: 0.67rem; font-weight: 700; color: #16a34a;
+      text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 5px;
+    }
+
+    /* MCQ / Quiz — 1 column so options are easy to tap */
+    .mcq-options  { grid-template-columns: 1fr; }
+    .quiz-options { grid-template-columns: 1fr; }
+
+    .text-input { font-size: 16px; }
+  }
+
+  /* ── Tablets & iPads  768 – 1024 px ─────────────────────── */
+  @media (min-width: 768px) and (max-width: 1024px) {
+    .content-area { max-width: 760px; padding: 18px 20px; }
+    .student-info input { width: 190px; font-size: 16px; }
+    .text-input { font-size: 16px; }
+    /* Keep 2-column match/mcq layout on tablets — screen is wide enough */
+  }
+</style>
+</head>
+<body>
+
+<header class="app-header">
+  <h1>Business English Quizes (A2+)</h1>
+  <p>Created by Bupha Ravirot &middot; Reference: Business Partner A2+</p>
+  <div class="student-info">
+    <div>
+      <label for="studentName">Student Name</label>
+      <input type="text" id="studentName" placeholder="Enter your name" autocomplete="name" autocapitalize="words" oninput="localStorage.setItem('bp_studentName', this.value)" />
+    </div>
+    <div>
+      <label for="studentId">Student ID</label>
+      <input type="text" id="studentId" placeholder="Enter your ID" autocomplete="off" inputmode="text" oninput="localStorage.setItem('bp_studentId', this.value)" />
+    </div>
+    <div>
+      <label for="studentEmail">Email Address</label>
+      <input type="email" id="studentEmail" placeholder="Enter your email" autocomplete="email" inputmode="email" oninput="localStorage.setItem('bp_studentEmail', this.value)" />
+    </div>
+  </div>
+</header>
+
+<nav class="main-nav">
+  <button class="nav-btn active" onclick="showUnit(0)">Travelling for Work</button>
+  <button class="nav-btn" onclick="showUnit(1)">Location</button>
+  <button class="nav-btn" onclick="showUnit(2)">Retail</button>
+  <button class="nav-btn" onclick="showUnit(3)">Work Patterns</button>
+  <button class="nav-btn" onclick="showUnit(4)">Money</button>
+  <button class="nav-btn" onclick="showUnit(5)">Teamwork</button>
+  <button class="nav-btn" onclick="showUnit(6)">Research & Development</button>
+  <button class="nav-btn" onclick="showUnit(7)">Green Solutions</button>
+  <button class="nav-btn" onclick="showUnit(8)">Career Choices</button>
+  <button class="nav-btn" onclick="showUnit(9)">Business Sectors</button>
+  <button class="nav-btn quiz-btn" onclick="showQuiz()">Full Quiz (50 Q)</button>
+</nav>
+
+<div class="overall-progress-wrap">
+  <div class="overall-progress-label">Overall Progress</div>
+  <div class="overall-progress-bar"><div class="overall-progress-fill" id="overall-fill" style="width:0%"></div></div>
+  <div class="overall-progress-pct" id="overall-pct">0 / 48 exercises completed (0%)</div>
+</div>
+
+<div class="content-area">
+
+<!-- ===== UNIT 1 ===== -->
+<div class="unit-panel active" id="unit-0">
+  <div class="unit-header">
+    <div class="unit-banner-css" style="background:linear-gradient(135deg, #0ea5e9 0%, #2563eb 50%, #4f46e5 100%)">
+      <div class="banner-emoji">✈️</div>
+      <div class="banner-words"><span class="banner-chip">Transport</span><span class="banner-chip">Hotels</span><span class="banner-chip">Small Talk</span><span class="banner-chip">IT Problems</span></div>
+    </div>
+    <div class="unit-header-text">
+      <h2>Unit 1: Travelling for Work</h2>
+      <p>Transport vocabulary, comparatives &amp; superlatives, small talk, IT problems</p>
+    </div>
+  </div>
+  <div class="sub-tabs">
+    <button class="sub-tab active" onclick="showSub(0,0)">Vocabulary</button>
+    <button class="sub-tab" onclick="showSub(0,1)">Grammar</button>
+    <button class="sub-tab" onclick="showSub(0,2)">Communication &amp; Skills</button>
+  </div>
+  <div class="sub-panel active" id="u0s0">
+    <div class="card">
+      <h3>1A: Transport &amp; Accommodation &mdash; Matching</h3>
+      <span class="label">Click a left item, then the correct right item.</span>
+      <div class="match-container"><div class="match-col" id="m-u0m1-L"></div><div class="match-col" id="m-u0m1-R"></div></div>
+      <div class="score-display" id="sc-u0m1"></div>
+      <button class="btn btn-secondary" onclick="resetMatch('u0m1')">Score</button>
+    </div>
+    <div class="card">
+      <h3>1B: Travel Opposites &mdash; Fill in the Blank</h3>
+      <span class="label">Click a word from the box, then click the gap.</span>
+      <div class="word-box" id="wb-u0f1"></div>
+      <div id="gaps-u0f1"></div>
+      <div class="score-display" id="sc-u0f1"></div>
+      <button class="btn btn-secondary" onclick="resetFill('u0f1')">Score</button>
+    </div>
+    <div class="card">
+      <h3>1C: Accommodation Types &mdash; MCQ</h3>
+      <div id="mcq-u0q1"></div>
+      <button class="btn btn-secondary" onclick="resetMCQ('u0q1')">Score</button>
+    </div>
+  </div>
+  <div class="sub-panel" id="u0s1">
+    <div class="card">
+      <h3>2A: Comparatives &mdash; Choose the Correct Form</h3>
+      <div id="mcq-u0q2"></div>
+      <button class="btn btn-secondary" onclick="resetMCQ('u0q2')">Score</button>
+    </div>
+    <div class="card">
+      <h3>2B: Superlatives &mdash; Type the Answer</h3>
+      <span class="label">Type the superlative form, then click Check.</span>
+      <div id="ti-u0t1"></div>
+      <button class="btn btn-check" onclick="checkTI('u0t1')">Check Answers</button>
+      <button class="btn btn-secondary" onclick="resetTI('u0t1')">Score</button>
+      <div class="score-display" id="sc-u0t1"></div>
+    </div>
+  </div>
+  <div class="sub-panel" id="u0s2">
+    <div class="card">
+      <h3>3A: Small Talk AAA Model &mdash; Matching</h3>
+      <span class="label">Match each question to the correct response.</span>
+      <div class="match-container"><div class="match-col" id="m-u0m2-L"></div><div class="match-col" id="m-u0m2-R"></div></div>
+      <div class="score-display" id="sc-u0m2"></div>
+      <button class="btn btn-secondary" onclick="resetMatch('u0m2')">Score</button>
+    </div>
+    <div class="card">
+      <h3>3B: IT Problems &mdash; MCQ</h3>
+      <div id="mcq-u0q3"></div>
+      <button class="btn btn-secondary" onclick="resetMCQ('u0q3')">Score</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== UNIT 2 ===== -->
+<div class="unit-panel" id="unit-1">
+  <div class="unit-header">
+    <div class="unit-banner-css" style="background:linear-gradient(135deg, #8b5cf6 0%, #6366f1 50%, #3b82f6 100%)">
+      <div class="banner-emoji">🏙️</div>
+      <div class="banner-words"><span class="banner-chip">Location</span><span class="banner-chip">Factories</span><span class="banner-chip">Meetings</span><span class="banner-chip">Clarifying</span></div>
+    </div>
+    <div class="unit-header-text">
+      <h2>Unit 2: Location</h2>
+      <p>Location vocabulary, enough/too, checking &amp; clarifying, starting a meeting</p>
+    </div>
+  </div>
+  <div class="sub-tabs">
+    <button class="sub-tab active" onclick="showSub(1,0)">Vocabulary</button>
+    <button class="sub-tab" onclick="showSub(1,1)">Grammar</button>
+    <button class="sub-tab" onclick="showSub(1,2)">Communication &amp; Skills</button>
+  </div>
+  <div class="sub-panel active" id="u1s0">
+    <div class="card">
+      <h3>1A: Location Words &mdash; Fill in the Blank</h3>
+      <span class="label">Click a word, then click the gap.</span>
+      <div class="word-box" id="wb-u1f1"></div>
+      <div id="gaps-u1f1"></div>
+      <div class="score-display" id="sc-u1f1"></div>
+      <button class="btn btn-secondary" onclick="resetFill('u1f1')">Score</button>
+    </div>
+    <div class="card">
+      <h3>1B: Location Vocabulary &mdash; MCQ</h3>
+      <div id="mcq-u1q1"></div>
+      <button class="btn btn-secondary" onclick="resetMCQ('u1q1')">Score</button>
+    </div>
+  </div>
+  <div class="sub-panel" id="u1s1">
+    <div class="card">
+      <h3>2A: Too / Enough &mdash; MCQ</h3>
+      <div id="mcq-u1q2"></div>
+      <button class="btn btn-secondary" onclick="resetMCQ('u1q2')">Score</button>
+    </div>
+    <div class="card">
+      <h3>2B: Too / Enough &mdash; Fill in the Blank</h3>
+      <span class="label">Click a phrase, then click the gap.</span>
+      <div class="word-box" id="wb-u1f2"></div>
+      <div id="gaps-u1f2"></div>
+      <div class="score-display" id="sc-u1f2"></div>
+      <button class="btn btn-secondary" onclick="resetFill('u1f2')">Score</button>
+    </div>
+  </div>
+  <div class="sub-panel" id="u1s2">
+    <div class="card">
+      <h3>3A: Checking &amp; Clarifying &mdash; Matching</h3>
+      <div class="match-container"><div class="match-col" id="m-u1m1-L"></div><div class="match-col" id="m-u1m1-R"></div></div>
+      <div class="score-display" id="sc-u1m1"></div>
+      <button class="btn btn-secondary" onclick="resetMatch('u1m1')">Score</button>
+    </div>
+    <div class="card">
+      <h3>3B: Starting a Meeting &mdash; MCQ</h3>
+      <div id="mcq-u1q3"></div>
+      <button class="btn btn-secondary" onclick="resetMCQ('u1q3')">Score</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== UNIT 3 ===== -->
+<div class="unit-panel" id="unit-2">
+  <div class="unit-header">
+    <div class="unit-banner-css" style="background:linear-gradient(135deg, #ec4899 0%, #f43f5e 50%, #fb923c 100%)">
+      <div class="banner-emoji">🛍️</div>
+      <div class="banner-words"><span class="banner-chip">Shops</span><span class="banner-chip">Shopping</span><span class="banner-chip">Past Tense</span><span class="banner-chip">Presentations</span></div>
+    </div>
+    <div class="unit-header-text">
+      <h2>Unit 3: Retail</h2>
+      <p>Retail vocabulary, past simple &amp; continuous, presentation signposting</p>
+    </div>
+  </div>
+  <div class="sub-tabs">
+    <button class="sub-tab active" onclick="showSub(2,0)">Vocabulary</button>
+    <button class="sub-tab" onclick="showSub(2,1)">Grammar</button>
+    <button class="sub-tab" onclick="showSub(2,2)">Communication &amp; Skills</button>
+  </div>
+  <div class="sub-panel active" id="u2s0">
+    <div class="card">
+      <h3>1A: Retail Words &mdash; MCQ</h3>
+      <div id="mcq-u2q1"></div>
+      <button class="btn btn-secondary" onclick="resetMCQ('u2q1')">Score</button>
+    </div>
+    <div class="card">
+      <h3>1B: Retail Collocations &mdash; Matching (verb + noun)</h3>
+      <span class="label">Match each verb to the correct noun.</span>
+      <div class="match-container"><div class="match-col" id="m-u2m1-L"></div><div class="match-col" id="m-u2m1-R"></div></div>
+      <div class="score-display" id="sc-u2m1"></div>
+      <button class="btn btn-secondary" onclick="resetMatch('u2m1')">Score</button>
+    </div>
+  </div>
+  <div class="sub-panel" id="u2s1">
+    <div class="card">
+      <h3>2A: Past Simple &mdash; Fill in the Blank</h3>
+      <span class="label">Click the correct past simple form, then click the gap.</span>
+      <div class="word-box" id="wb-u2f1"></div>
+      <div id="gaps-u2f1"></div>
+      <div class="score-display" id="sc-u2f1"></div>
+      <button class="btn btn-secondary" onclick="resetFill('u2f1')">Score</button>
+    </div>
+    <div class="card">
+      <h3>2B: Past Continuous &mdash; MCQ</h3>
+      <div id="mcq-u2q2"></div>
+      <button class="btn btn-secondary" onclick="resetMCQ('u2q2')">Score</button>
+    </div>
+  </div>
+  <div class="sub-panel" id="u2s2">
+    <div class="card">
+      <h3>3A: Presentation Signposting &mdash; Matching</h3>
+      <span class="label">Match each phrase to where it appears in a presentation.</span>
+      <div class="match-container"><div class="match-col" id="m-u2m2-L"></div><div class="match-col" id="m-u2m2-R"></div></div>
+      <div class="score-display" id="sc-u2m2"></div>
+      <button class="btn btn-secondary" onclick="resetMatch('u2m2')">Score</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== UNIT 4 ===== -->
+<div class="unit-panel" id="unit-3">
+  <div class="unit-header">
+    <div class="unit-banner-css" style="background:linear-gradient(135deg, #059669 0%, #10b981 50%, #34d399 100%)">
+      <div class="banner-emoji">💼</div>
+      <div class="banner-words"><span class="banner-chip">Contracts</span><span class="banner-chip">Full-time</span><span class="banner-chip">Present Perfect</span><span class="banner-chip">Phone Calls</span></div>
+    </div>
+    <div class="unit-header-text">
+      <h2>Unit 4: Work Patterns</h2>
+      <p>Work vocabulary, present perfect, phoning to change arrangements</p>
+    </div>
+  </div>
+  <div class="sub-tabs">
+    <button class="sub-tab active" onclick="showSub(3,0)">Vocabulary</button>
+    <button class="sub-tab" onclick="showSub(3,1)">Grammar</button>
+    <button class="sub-tab" onclick="showSub(3,2)">Communication &amp; Skills</button>
+  </div>
+  <div class="sub-panel active" id="u3s0">
+    <div class="card">
+      <h3>1A: Work Vocabulary &mdash; MCQ</h3>
+      <div id="mcq-u3q1"></div>
+      <button class="btn btn-secondary" onclick="resetMCQ('u3q1')">Score</button>
+    </div>
+    <div class="card">
+      <h3>1B: Work Status &mdash; Fill in the Blank</h3>
+      <span class="label">Click a word, then click the gap.</span>
+      <div class="word-box" id="wb-u3f1"></div>
+      <div id="gaps-u3f1"></div>
+      <div class="score-display" id="sc-u3f1"></div>
+      <button class="btn btn-secondary" onclick="resetFill('u3f1')">Score</button>
+    </div>
+  </div>
+  <div class="sub-panel" id="u3s1">
+    <div class="card">
+      <h3>2A: Present Perfect &mdash; Irregular Past Participles</h3>
+      <span class="label">Type the past participle, then click Check.</span>
+      <div id="ti-u3t1"></div>
+      <button class="btn btn-check" onclick="checkTI('u3t1')">Check Answers</button>
+      <button class="btn btn-secondary" onclick="resetTI('u3t1')">Score</button>
+      <div class="score-display" id="sc-u3t1"></div>
+    </div>
+    <div class="card">
+      <h3>2B: Present Perfect &mdash; MCQ</h3>
+      <div id="mcq-u3q2"></div>
+      <button class="btn btn-secondary" onclick="resetMCQ('u3q2')">Score</button>
+    </div>
+  </div>
+  <div class="sub-panel" id="u3s2">
+    <div class="card">
+      <h3>3A: Phoning to Change Arrangements &mdash; MCQ</h3>
+      <div id="mcq-u3q3"></div>
+      <button class="btn btn-secondary" onclick="resetMCQ('u3q3')">Score</button>
+    </div>
+    <div class="card">
+      <h3>3B: Confirming Arrangements &mdash; Matching</h3>
+      <span class="label">Match each situation to the correct email phrase.</span>
+      <div class="match-container"><div class="match-col" id="m-u3m1-L"></div><div class="match-col" id="m-u3m1-R"></div></div>
+      <div class="score-display" id="sc-u3m1"></div>
+      <button class="btn btn-secondary" onclick="resetMatch('u3m1')">Score</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== UNIT 5 ===== -->
+<div class="unit-panel" id="unit-4">
+  <div class="unit-header">
+    <div class="unit-banner-css" style="background:linear-gradient(135deg, #d97706 0%, #f59e0b 50%, #fbbf24 100%)">
+      <div class="banner-emoji">💰</div>
+      <div class="banner-words"><span class="banner-chip">Payments</span><span class="banner-chip">Currency</span><span class="banner-chip">Conditional</span><span class="banner-chip">Figures</span></div>
+    </div>
+    <div class="unit-header-text">
+      <h2>Unit 5: Money</h2>
+      <p>Payment vocabulary, first conditional, presenting figures</p>
+    </div>
+  </div>
+  <div class="sub-tabs">
+    <button class="sub-tab active" onclick="showSub(4,0)">Vocabulary</button>
+    <button class="sub-tab" onclick="showSub(4,1)">Grammar</button>
+    <button class="sub-tab" onclick="showSub(4,2)">Communication &amp; Skills</button>
+  </div>
+  <div class="sub-panel active" id="u4s0">
+    <div class="card">
+      <h3>1A: Money Vocabulary &mdash; MCQ</h3>
+      <div id="mcq-u4q1"></div>
+      <button class="btn btn-secondary" onclick="resetMCQ('u4q1')">Score</button>
+    </div>
+    <div class="card">
+      <h3>1B: Cash Collocations &mdash; Fill in the Blank</h3>
+      <span class="label">Click a phrase, then click the gap.</span>
+      <div class="word-box" id="wb-u4f1"></div>
+      <div id="gaps-u4f1"></div>
+      <div class="score-display" id="sc-u4f1"></div>
+      <button class="btn btn-secondary" onclick="resetFill('u4f1')">Score</button>
+    </div>
+  </div>
+  <div class="sub-panel" id="u4s1">
+    <div class="card">
+      <h3>2A: First Conditional &mdash; MCQ</h3>
+      <div id="mcq-u4q2"></div>
+      <button class="btn btn-secondary" onclick="resetMCQ('u4q2')">Score</button>
+    </div>
+    <div class="card">
+      <h3>2B: First Conditional &mdash; Fill in the Blank</h3>
+      <span class="label">Click a word or phrase, then click the gap.</span>
+      <div class="word-box" id="wb-u4f2"></div>
+      <div id="gaps-u4f2"></div>
+      <div class="score-display" id="sc-u4f2"></div>
+      <button class="btn btn-secondary" onclick="resetFill('u4f2')">Score</button>
+    </div>
+  </div>
+  <div class="sub-panel" id="u4s2">
+    <div class="card">
+      <h3>3A: Presenting Figures &mdash; Approximate Values MCQ</h3>
+      <span class="label">Choose the best approximate expression for each percentage.</span>
+      <div id="mcq-u4q3"></div>
+      <button class="btn btn-secondary" onclick="resetMCQ('u4q3')">Score</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== UNIT 6 ===== -->
+<div class="unit-panel" id="unit-5">
+  <div class="unit-header">
+    <div class="unit-banner-css" style="background:linear-gradient(135deg, #0891b2 0%, #06b6d4 50%, #22d3ee 100%)">
+      <div class="banner-emoji">🤝</div>
+      <div class="banner-words"><span class="banner-chip">Cooperation</span><span class="banner-chip">Trust</span><span class="banner-chip">Pronouns</span><span class="banner-chip">Meetings</span></div>
+    </div>
+    <div class="unit-header-text">
+      <h2>Unit 6: Teamwork</h2>
+      <p>Teamwork vocabulary, indefinite pronouns, supporting colleagues, positive meetings</p>
+    </div>
+  </div>
+  <div class="sub-tabs">
+    <button class="sub-tab active" onclick="showSub(5,0)">Vocabulary</button>
+    <button class="sub-tab" onclick="showSub(5,1)">Grammar</button>
+    <button class="sub-tab" onclick="showSub(5,2)">Communication &amp; Skills</button>
+  </div>
+  <div class="sub-panel active" id="u5s0">
+    <div class="card">
+      <h3>1A: Teamwork Vocabulary &mdash; MCQ</h3>
+      <div id="mcq-u5q1"></div>
+      <button class="btn btn-secondary" onclick="resetMCQ('u5q1')">Score</button>
+    </div>
+    <div class="card">
+      <h3>1B: Word Building &mdash; Verb to Noun Matching</h3>
+      <span class="label">Match each verb to its noun form.</span>
+      <div class="match-container"><div class="match-col" id="m-u5m1-L"></div><div class="match-col" id="m-u5m1-R"></div></div>
+      <div class="score-display" id="sc-u5m1"></div>
+      <button class="btn btn-secondary" onclick="resetMatch('u5m1')">Score</button>
+    </div>
+  </div>
+  <div class="sub-panel" id="u5s1">
+    <div class="card">
+      <h3>2A: Indefinite Pronouns &mdash; MCQ</h3>
+      <div id="mcq-u5q2"></div>
+      <button class="btn btn-secondary" onclick="resetMCQ('u5q2')">Score</button>
+    </div>
+    <div class="card">
+      <h3>2B: Indefinite Pronouns &mdash; Fill in the Blank</h3>
+      <span class="label">Click a pronoun, then click the gap.</span>
+      <div class="word-box" id="wb-u5f1"></div>
+      <div id="gaps-u5f1"></div>
+      <div class="score-display" id="sc-u5f1"></div>
+      <button class="btn btn-secondary" onclick="resetFill('u5f1')">Score</button>
+    </div>
+  </div>
+  <div class="sub-panel" id="u5s2">
+    <div class="card">
+      <h3>3A: Supporting a Colleague &mdash; MCQ</h3>
+      <div id="mcq-u5q3"></div>
+      <button class="btn btn-secondary" onclick="resetMCQ('u5q3')">Score</button>
+    </div>
+    <div class="card">
+      <h3>3B: Being Positive in Meetings &mdash; Matching</h3>
+      <span class="label">Match each situation to the correct phrase.</span>
+      <div class="match-container"><div class="match-col" id="m-u5m2-L"></div><div class="match-col" id="m-u5m2-R"></div></div>
+      <div class="score-display" id="sc-u5m2"></div>
+      <button class="btn btn-secondary" onclick="resetMatch('u5m2')">Score</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== UNIT 7 ===== -->
+<div class="unit-panel" id="unit-6">
+  <div class="unit-header">
+    <div class="unit-banner-css" style="background:linear-gradient(135deg, #7c3aed 0%, #8b5cf6 50%, #a78bfa 100%)">
+      <div class="banner-emoji">🔬</div>
+      <div class="banner-words"><span class="banner-chip">Prototype</span><span class="banner-chip">Design</span><span class="banner-chip">can/have to</span><span class="banner-chip">Explanations</span></div>
+    </div>
+    <div class="unit-header-text">
+      <h2>Unit 7: Research &amp; Development</h2>
+      <p>R&amp;D vocabulary, can/have to/need to, giving explanations, online meeting problems</p>
+    </div>
+  </div>
+  <div class="sub-tabs">
+    <button class="sub-tab active" onclick="showSub(6,0)">Vocabulary</button>
+    <button class="sub-tab" onclick="showSub(6,1)">Grammar</button>
+    <button class="sub-tab" onclick="showSub(6,2)">Communication &amp; Skills</button>
+  </div>
+  <div class="sub-panel active" id="u6s0">
+    <div class="card">
+      <h3>1A: R&amp;D Process Vocabulary &mdash; MCQ</h3>
+      <div id="mcq-u6q1"></div>
+      <button class="btn btn-secondary" onclick="resetMCQ('u6q1')">Score</button>
+    </div>
+    <div class="card">
+      <h3>1B: R&amp;D Roles &mdash; Matching</h3>
+      <div class="match-container"><div class="match-col" id="m-u6m1-L"></div><div class="match-col" id="m-u6m1-R"></div></div>
+      <div class="score-display" id="sc-u6m1"></div>
+      <button class="btn btn-secondary" onclick="resetMatch('u6m1')">Score</button>
+    </div>
+  </div>
+  <div class="sub-panel" id="u6s1">
+    <div class="card">
+      <h3>2A: Can / Have to / Need to &mdash; MCQ</h3>
+      <div id="mcq-u6q2"></div>
+      <button class="btn btn-secondary" onclick="resetMCQ('u6q2')">Score</button>
+    </div>
+    <div class="card">
+      <h3>2B: Modal Verbs &mdash; Fill in the Blank</h3>
+      <span class="label">Click a word or phrase, then click the gap.</span>
+      <div class="word-box" id="wb-u6f1"></div>
+      <div id="gaps-u6f1"></div>
+      <div class="score-display" id="sc-u6f1"></div>
+      <button class="btn btn-secondary" onclick="resetFill('u6f1')">Score</button>
+    </div>
+  </div>
+  <div class="sub-panel" id="u6s2">
+    <div class="card">
+      <h3>3A: Giving Explanations &mdash; Sequence Words MCQ</h3>
+      <div id="mcq-u6q3"></div>
+      <button class="btn btn-secondary" onclick="resetMCQ('u6q3')">Score</button>
+    </div>
+    <div class="card">
+      <h3>3B: Online Meeting Problems &mdash; Matching</h3>
+      <span class="label">Match each problem signal to the correct solution phrase.</span>
+      <div class="match-container"><div class="match-col" id="m-u6m2-L"></div><div class="match-col" id="m-u6m2-R"></div></div>
+      <div class="score-display" id="sc-u6m2"></div>
+      <button class="btn btn-secondary" onclick="resetMatch('u6m2')">Score</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== UNIT 8 ===== -->
+<div class="unit-panel" id="unit-7">
+  <div class="unit-header">
+    <div class="unit-banner-css" style="background:linear-gradient(135deg, #16a34a 0%, #22c55e 50%, #4ade80 100%)">
+      <div class="banner-emoji">🌿</div>
+      <div class="banner-words"><span class="banner-chip">Environment</span><span class="banner-chip">Recycling</span><span class="banner-chip">should/could</span><span class="banner-chip">Feedback</span></div>
+    </div>
+    <div class="unit-header-text">
+      <h2>Unit 8: Green Solutions</h2>
+      <p>Environment vocabulary, should/could, giving &amp; receiving feedback, managing Q&amp;A</p>
+    </div>
+  </div>
+  <div class="sub-tabs">
+    <button class="sub-tab active" onclick="showSub(7,0)">Vocabulary</button>
+    <button class="sub-tab" onclick="showSub(7,1)">Grammar</button>
+    <button class="sub-tab" onclick="showSub(7,2)">Communication &amp; Skills</button>
+  </div>
+  <div class="sub-panel active" id="u7s0">
+    <div class="card">
+      <h3>1A: Environment Vocabulary &mdash; MCQ</h3>
+      <div id="mcq-u7q1"></div>
+      <button class="btn btn-secondary" onclick="resetMCQ('u7q1')">Score</button>
+    </div>
+    <div class="card">
+      <h3>1B: Verb to Noun Word Building &mdash; Matching</h3>
+      <div class="match-container"><div class="match-col" id="m-u7m1-L"></div><div class="match-col" id="m-u7m1-R"></div></div>
+      <div class="score-display" id="sc-u7m1"></div>
+      <button class="btn btn-secondary" onclick="resetMatch('u7m1')">Score</button>
+    </div>
+  </div>
+  <div class="sub-panel" id="u7s1">
+    <div class="card">
+      <h3>2A: Should / Could &mdash; MCQ</h3>
+      <div id="mcq-u7q2"></div>
+      <button class="btn btn-secondary" onclick="resetMCQ('u7q2')">Score</button>
+    </div>
+    <div class="card">
+      <h3>2B: Should / Could &mdash; Fill in the Blank</h3>
+      <span class="label">Click a word, then click the gap.</span>
+      <div class="word-box" id="wb-u7f1"></div>
+      <div id="gaps-u7f1"></div>
+      <div class="score-display" id="sc-u7f1"></div>
+      <button class="btn btn-secondary" onclick="resetFill('u7f1')">Score</button>
+    </div>
+  </div>
+  <div class="sub-panel" id="u7s2">
+    <div class="card">
+      <h3>3A: Giving &amp; Receiving Feedback &mdash; MCQ</h3>
+      <div id="mcq-u7q3"></div>
+      <button class="btn btn-secondary" onclick="resetMCQ('u7q3')">Score</button>
+    </div>
+    <div class="card">
+      <h3>3B: Managing Q&amp;A &mdash; Matching</h3>
+      <span class="label">Match each Q&amp;A situation to the correct phrase.</span>
+      <div class="match-container"><div class="match-col" id="m-u7m2-L"></div><div class="match-col" id="m-u7m2-R"></div></div>
+      <div class="score-display" id="sc-u7m2"></div>
+      <button class="btn btn-secondary" onclick="resetMatch('u7m2')">Score</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== UNIT 9: CAREER CHOICES ===== -->
+<div class="unit-panel" id="unit-8">
+  <div class="unit-header">
+    <div class="unit-banner-css" style="background:linear-gradient(135deg, #7c3aed 0%, #a855f7 50%, #ec4899 100%)">
+      <div class="banner-emoji">🎯</div>
+      <div class="banner-words"><span class="banner-chip">Transferable Skills</span><span class="banner-chip">Career Advice</span><span class="banner-chip">Networking</span><span class="banner-chip">Rapport</span></div>
+    </div>
+    <div class="unit-header-text">
+      <h2>Unit 9: Career Choices</h2>
+      <p>Transferable skills vocabulary, advice &amp; suggestions, building rapport, networking</p>
+    </div>
+  </div>
+  <div class="sub-tabs">
+    <button class="sub-tab active" onclick="showSub(8,0)">Vocabulary</button>
+    <button class="sub-tab" onclick="showSub(8,1)">Grammar</button>
+    <button class="sub-tab" onclick="showSub(8,2)">Communication &amp; Skills</button>
+  </div>
+  <div class="sub-panel active" id="u8s0">
+    <div class="card">
+      <h3>1A: Transferable Skills &mdash; Matching</h3>
+      <span class="label">Click a left item, then the correct right item.</span>
+      <div class="match-container"><div class="match-col" id="m-u8m1-L"></div><div class="match-col" id="m-u8m1-R"></div></div>
+      <div class="score-display" id="sc-u8m1"></div>
+      <button class="btn btn-secondary" onclick="resetMatch('u8m1')">Score</button>
+    </div>
+    <div class="card">
+      <h3>1B: Personal Qualities &mdash; Fill in the Blank</h3>
+      <span class="label">Click a word, then click the gap.</span>
+      <div class="word-box" id="wb-u8f1"></div>
+      <div id="gaps-u8f1"></div>
+      <div class="score-display" id="sc-u8f1"></div>
+      <button class="btn btn-secondary" onclick="resetFill('u8f1')">Score</button>
+    </div>
+    <div class="card">
+      <h3>1C: Transferable Skills &mdash; MCQ</h3>
+      <div id="mcq-u8q1"></div>
+      <button class="btn btn-secondary" onclick="resetMCQ('u8q1')">Score</button>
+    </div>
+  </div>
+  <div class="sub-panel" id="u8s1">
+    <div class="card">
+      <h3>2A: Advice &amp; Suggestions &mdash; Fill in the Blank</h3>
+      <span class="label">Click a word, then click the gap.</span>
+      <div class="word-box" id="wb-u8f2"></div>
+      <div id="gaps-u8f2"></div>
+      <div class="score-display" id="sc-u8f2"></div>
+      <button class="btn btn-secondary" onclick="resetFill('u8f2')">Score</button>
+    </div>
+    <div class="card">
+      <h3>2B: Correct Form After Suggestion Phrases &mdash; MCQ</h3>
+      <div id="mcq-u8q2"></div>
+      <button class="btn btn-secondary" onclick="resetMCQ('u8q2')">Score</button>
+    </div>
+  </div>
+  <div class="sub-panel" id="u8s2">
+    <div class="card">
+      <h3>3A: Networking Language &mdash; Matching</h3>
+      <span class="label">Match each phrase to what it does in a conversation.</span>
+      <div class="match-container"><div class="match-col" id="m-u8m2-L"></div><div class="match-col" id="m-u8m2-R"></div></div>
+      <div class="score-display" id="sc-u8m2"></div>
+      <button class="btn btn-secondary" onclick="resetMatch('u8m2')">Score</button>
+    </div>
+    <div class="card">
+      <h3>3B: Career Choices Review &mdash; MCQ</h3>
+      <div id="mcq-u8q3"></div>
+      <button class="btn btn-secondary" onclick="resetMCQ('u8q3')">Score</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== UNIT 10: BUSINESS SECTORS ===== -->
+<div class="unit-panel" id="unit-9">
+  <div class="unit-header">
+    <div class="unit-banner-css" style="background:linear-gradient(135deg, #ea580c 0%, #f59e0b 50%, #eab308 100%)">
+      <div class="banner-emoji">🏭</div>
+      <div class="banner-words"><span class="banner-chip">Sectors &amp; Industries</span><span class="banner-chip">Energy</span><span class="banner-chip">Past Tenses</span><span class="banner-chip">Interruptions</span></div>
+    </div>
+    <div class="unit-header-text">
+      <h2>Unit 10: Business Sectors</h2>
+      <p>Sectors &amp; industries vocabulary, Past Simple &amp; Continuous, dealing with interruptions, voicemail</p>
+    </div>
+  </div>
+  <div class="sub-tabs">
+    <button class="sub-tab active" onclick="showSub(9,0)">Vocabulary</button>
+    <button class="sub-tab" onclick="showSub(9,1)">Grammar</button>
+    <button class="sub-tab" onclick="showSub(9,2)">Communication &amp; Skills</button>
+  </div>
+  <div class="sub-panel active" id="u9s0">
+    <div class="card">
+      <h3>1A: Economic Sectors &mdash; Matching</h3>
+      <span class="label">Click a left item, then the correct right item.</span>
+      <div class="match-container"><div class="match-col" id="m-u9m1-L"></div><div class="match-col" id="m-u9m1-R"></div></div>
+      <div class="score-display" id="sc-u9m1"></div>
+      <button class="btn btn-secondary" onclick="resetMatch('u9m1')">Score</button>
+    </div>
+    <div class="card">
+      <h3>1B: Sectors &amp; Industries &mdash; Fill in the Blank</h3>
+      <span class="label">Click a word, then click the gap.</span>
+      <div class="word-box" id="wb-u9f1"></div>
+      <div id="gaps-u9f1"></div>
+      <div class="score-display" id="sc-u9f1"></div>
+      <button class="btn btn-secondary" onclick="resetFill('u9f1')">Score</button>
+    </div>
+    <div class="card">
+      <h3>1C: Which Sector? &mdash; MCQ</h3>
+      <div id="mcq-u9q1"></div>
+      <button class="btn btn-secondary" onclick="resetMCQ('u9q1')">Score</button>
+    </div>
+  </div>
+  <div class="sub-panel" id="u9s1">
+    <div class="card">
+      <h3>2A: Past Simple &mdash; Fill in the Blank</h3>
+      <span class="label">Click a word, then click the gap.</span>
+      <div class="word-box" id="wb-u9f2"></div>
+      <div id="gaps-u9f2"></div>
+      <div class="score-display" id="sc-u9f2"></div>
+      <button class="btn btn-secondary" onclick="resetFill('u9f2')">Score</button>
+    </div>
+    <div class="card">
+      <h3>2B: Past Simple &amp; Past Continuous &mdash; MCQ</h3>
+      <div id="mcq-u9q2"></div>
+      <button class="btn btn-secondary" onclick="resetMCQ('u9q2')">Score</button>
+    </div>
+  </div>
+  <div class="sub-panel" id="u9s2">
+    <div class="card">
+      <h3>3A: Dealing with Interruptions &mdash; Matching</h3>
+      <span class="label">Match each expression to its function in a meeting.</span>
+      <div class="match-container"><div class="match-col" id="m-u9m2-L"></div><div class="match-col" id="m-u9m2-R"></div></div>
+      <div class="score-display" id="sc-u9m2"></div>
+      <button class="btn btn-secondary" onclick="resetMatch('u9m2')">Score</button>
+    </div>
+    <div class="card">
+      <h3>3B: Voicemail Messages &mdash; MCQ</h3>
+      <div id="mcq-u9q3"></div>
+      <button class="btn btn-secondary" onclick="resetMCQ('u9q3')">Score</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== FULL QUIZ ===== -->
+<div class="unit-panel" id="quiz-panel">
+  <div class="unit-header">
+    <h2>Full Quiz &mdash; All 10 Units</h2>
+    <p>40 questions covering vocabulary, grammar, and communication from every unit</p>
+  </div>
+  <div id="quiz-start-screen">
+    <div class="card" style="text-align:center;padding:40px;">
+      <div style="font-size:3rem;margin-bottom:12px;">&#128221;</div>
+      <h3 style="font-size:1.3rem;margin-bottom:8px;">Ready to test your knowledge?</h3>
+      <p style="color:#64748b;margin-bottom:20px;">40 questions &middot; All 8 units &middot; Immediate feedback</p>
+      <button class="btn" style="font-size:1rem;padding:12px 32px;" onclick="startQuiz()">Start Quiz</button>
+    </div>
+  </div>
+  <div id="quiz-active-screen" style="display:none;">
+    <div class="quiz-meta">
+      <span id="quiz-counter">Question 1 of 40</span>
+      <span id="quiz-score-live">Score: 0</span>
+    </div>
+    <div class="quiz-progress-bar"><div class="quiz-progress-fill" id="quiz-prog" style="width:0%"></div></div>
+    <div class="quiz-question-card">
+      <div class="quiz-q-text" id="quiz-q-text"></div>
+      <div class="quiz-options" id="quiz-opts"></div>
+      <div id="quiz-feedback" style="display:none;"></div>
+    </div>
+    <div class="quiz-nav">
+      <button class="btn" id="quiz-next-btn" onclick="quizNext()" style="display:none;">Next Question &#8594;</button>
+    </div>
+  </div>
+  <div id="quiz-result-screen" style="display:none;">
+    <div class="result-screen">
+      <div class="result-emoji" id="result-emoji"></div>
+      <div class="result-score" id="result-score"></div>
+      <div class="result-label">out of 40</div>
+      <div class="result-msg" id="result-msg"></div>
+      <button class="btn" style="margin-top:20px;font-size:1rem;" onclick="restartQuiz()">Try Again</button>
+    </div>
+  </div>
+</div>
+
+</div><!-- end content-area -->
+
+<script>
+// ======================================================
+// NAVIGATION
+// ======================================================
+var navBtns = document.querySelectorAll('.nav-btn');
+
+function showUnit(idx) {
+  document.querySelectorAll('.unit-panel').forEach(function(p) { p.classList.remove('active'); });
+  navBtns.forEach(function(b) { b.classList.remove('active'); });
+  document.getElementById('unit-' + idx).classList.add('active');
+  navBtns[idx].classList.add('active');
+}
+
+function showQuiz() {
+  document.querySelectorAll('.unit-panel').forEach(function(p) { p.classList.remove('active'); });
+  navBtns.forEach(function(b) { b.classList.remove('active'); });
+  document.getElementById('quiz-panel').classList.add('active');
+  navBtns[10].classList.add('active');
+}
+
+function showSub(unitIdx, tabIdx) {
+  var panel = document.getElementById('unit-' + unitIdx);
+  var subPanels = panel.querySelectorAll('.sub-panel');
+  var subTabs = panel.querySelectorAll('.sub-tab');
+  subPanels.forEach(function(p) { p.classList.remove('active'); });
+  subTabs.forEach(function(t) { t.classList.remove('active'); });
+  subPanels[tabIdx].classList.add('active');
+  subTabs[tabIdx].classList.add('active');
+}
+
+// ======================================================
+// EXERCISE ANSWER PERSISTENCE
+// ======================================================
+var savedExAnswers = {};
+var tiChecked = {};
+
+function loadExAnswers() {
+  var s = localStorage.getItem('bp_answers');
+  if (s) {
+    try {
+      savedExAnswers = JSON.parse(s);
+      // Restore tiChecked flags
+      if (savedExAnswers.ti) {
+        Object.keys(savedExAnswers.ti).forEach(function(id) {
+          if (savedExAnswers.ti[id].checked) tiChecked[id] = true;
+        });
+      }
+    } catch(e) { savedExAnswers = {}; }
+  }
+}
+
+function saveExAnswers() {
+  var data = { fill: {}, mcq: {}, match: {}, ti: {} };
+  Object.keys(fillData).forEach(function(id) {
+    data.fill[id] = fillData[id].filled;
+  });
+  Object.keys(mcqData).forEach(function(id) {
+    data.mcq[id] = mcqData[id].answered;
+  });
+  Object.keys(matchData).forEach(function(id) {
+    data.match[id] = { matched: matchData[id].matched, rights: matchData[id].rights };
+  });
+  Object.keys(tiData).forEach(function(id) {
+    var c = document.getElementById('ti-' + id);
+    var vals = [];
+    if (c) { c.querySelectorAll('.text-input').forEach(function(inp) { vals.push(inp.value); }); }
+    data.ti[id] = { values: vals, checked: !!tiChecked[id] };
+  });
+  savedExAnswers = data;
+  localStorage.setItem('bp_answers', JSON.stringify(data));
+}
+
+// ======================================================
+// FILL-IN-BLANK (word chip -> gap)
+// ======================================================
+var fillData = {};
+
+function initFill(id, words, sentences) {
+  fillData[id] = { words: words, sentences: sentences, filled: {}, selected: null };
+  if (savedExAnswers.fill && savedExAnswers.fill[id]) {
+    fillData[id].filled = savedExAnswers.fill[id];
+  }
+  renderFill(id);
+  // Restore score display if all gaps were already filled
+  var d = fillData[id];
+  if (Object.keys(d.filled).length === d.sentences.length) {
+    var correct = 0;
+    d.sentences.forEach(function(ss, ii) {
+      if (d.filled[ii] && d.filled[ii].toLowerCase().trim() === ss.answer.toLowerCase().trim()) correct++;
+    });
+    var sc = document.getElementById('sc-' + id);
+    if (sc) { sc.textContent = 'Score: ' + correct + ' / ' + d.sentences.length; sc.style.display = 'block'; }
+    markExerciseDone(id);
+  }
+}
+
+function shuffle(arr) {
+  var a = arr.slice();
+  for (var i = a.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var t = a[i]; a[i] = a[j]; a[j] = t;
+  }
+  return a;
+}
+
+function renderFill(id) {
+  var d = fillData[id];
+  var wb = document.getElementById('wb-' + id);
+  var gapsDiv = document.getElementById('gaps-' + id);
+  var sc = document.getElementById('sc-' + id);
+  if (!wb || !gapsDiv) return;
+  sc.style.display = 'none';
+
+  // Count how many times each word is needed vs filled
+  var needed = {};
+  d.words.forEach(function(w) { needed[w] = (needed[w] || 0) + 1; });
+  var usedCount = {};
+  Object.values(d.filled).forEach(function(v) { usedCount[v] = (usedCount[v] || 0) + 1; });
+
+  // Build word box (shuffled unique words, show used state)
+  wb.innerHTML = '';
+  var shuffled = shuffle(d.words.filter(function(w, i, self) { return self.indexOf(w) === i; }));
+  shuffled.forEach(function(word) {
+    var avail = (needed[word] || 0) - (usedCount[word] || 0);
+    var chip = document.createElement('span');
+    chip.className = 'word-chip' + (avail <= 0 ? ' used' : '') + (d.selected === word ? ' selected' : '');
+    chip.textContent = word;
+    chip.onclick = function() {
+      if (avail <= 0) return;
+      d.selected = (d.selected === word) ? null : word;
+      renderFill(id);
+    };
+    wb.appendChild(chip);
+  });
+
+  // Build sentences with gaps
+  gapsDiv.innerHTML = '';
+  d.sentences.forEach(function(s, idx) {
+    var div = document.createElement('div');
+    div.className = 'fill-sentence';
+    var parts = s.text.split('___');
+    var frag = document.createDocumentFragment();
+    frag.appendChild(document.createTextNode((idx + 1) + '. ' + parts[0]));
+    var gap = document.createElement('span');
+    gap.className = 'gap';
+    if (d.filled[idx] !== undefined) {
+      gap.textContent = d.filled[idx];
+      var isOk = d.filled[idx].toLowerCase().trim() === s.answer.toLowerCase().trim();
+      gap.classList.add(isOk ? 'correct' : 'incorrect');
+    } else {
+      gap.textContent = ' ________ ';
+    }
+    gap.onclick = function() {
+      if (!d.selected) return;
+      // Undo previous if incorrect
+      d.filled[idx] = d.selected;
+      d.selected = null;
+      renderFill(id);
+      saveExAnswers();
+      // Show score if all filled
+      var filledCount = Object.keys(d.filled).length;
+      if (filledCount === d.sentences.length) {
+        var correct = 0;
+        d.sentences.forEach(function(ss, ii) {
+          if (d.filled[ii] && d.filled[ii].toLowerCase().trim() === ss.answer.toLowerCase().trim()) correct++;
+        });
+        sc.textContent = 'Score: ' + correct + ' / ' + d.sentences.length;
+        sc.style.display = 'block';
+        markExerciseDone(id);
+      }
+    };
+    frag.appendChild(gap);
+    if (parts[1]) frag.appendChild(document.createTextNode(parts[1]));
+    div.appendChild(frag);
+    gapsDiv.appendChild(div);
+  });
+}
+
+function resetFill(id) {
+  var d = fillData[id];
+  if (!d) return;
+  d.filled = {};
+  d.selected = null;
+  saveExAnswers();
+  renderFill(id);
+}
+
+// ======================================================
+// MCQ
+// ======================================================
+var mcqData = {};
+
+function initMCQ(id, questions) {
+  mcqData[id] = { questions: questions, answered: {} };
+  if (savedExAnswers.mcq && savedExAnswers.mcq[id]) {
+    mcqData[id].answered = savedExAnswers.mcq[id];
+  }
+  renderMCQ(id);
+  if (Object.keys(mcqData[id].answered).length === questions.length) {
+    markExerciseDone(id);
+  }
+}
+
+function renderMCQ(id) {
+  var d = mcqData[id];
+  var container = document.getElementById('mcq-' + id);
+  if (!container) return;
+  container.innerHTML = '';
+  d.questions.forEach(function(q, qi) {
+    var div = document.createElement('div');
+    div.className = 'mcq-question';
+    var p = document.createElement('p');
+    p.textContent = (qi + 1) + '. ' + q.q;
+    div.appendChild(p);
+    var opts = document.createElement('div');
+    opts.className = 'mcq-options';
+    q.options.forEach(function(opt) {
+      var btn = document.createElement('button');
+      btn.className = 'mcq-opt';
+      btn.textContent = opt;
+      if (d.answered[qi] !== undefined) {
+        btn.classList.add('disabled');
+        if (opt === q.answer) btn.classList.add('correct');
+        else if (opt === d.answered[qi]) btn.classList.add('incorrect');
+      }
+      btn.onclick = function() {
+        if (d.answered[qi] !== undefined) return;
+        d.answered[qi] = opt;
+        renderMCQ(id);
+        saveExAnswers();
+        if (Object.keys(d.answered).length === d.questions.length) {
+          markExerciseDone(id);
+        }
+      };
+      opts.appendChild(btn);
+    });
+    div.appendChild(opts);
+    if (d.answered[qi] !== undefined && d.answered[qi] !== q.answer) {
+      var ca = document.createElement('div');
+      ca.className = 'correct-answer';
+      ca.textContent = 'Correct answer: ' + q.answer;
+      div.appendChild(ca);
+    }
+    container.appendChild(div);
+  });
+}
+
+function resetMCQ(id) {
+  if (!mcqData[id]) return;
+  mcqData[id].answered = {};
+  saveExAnswers();
+  renderMCQ(id);
+}
+
+// ======================================================
+// MATCHING
+// ======================================================
+var matchData = {};
+
+function initMatch(id, pairs) {
+  var saved = savedExAnswers.match && savedExAnswers.match[id];
+  var rights = (saved && saved.rights) ? saved.rights : shuffle(pairs.map(function(p) { return p.right; }));
+  var matched = (saved && saved.matched) ? saved.matched : {};
+  matchData[id] = { pairs: pairs, rights: rights, selL: null, selR: null, matched: matched };
+  renderMatch(id);
+  // Restore score display if all pairs were already matched
+  var d = matchData[id];
+  if (Object.keys(d.matched).length === d.pairs.length) {
+    var correctCount = Object.values(d.matched).filter(Boolean).length;
+    var sc = document.getElementById('sc-' + id);
+    if (sc) { sc.textContent = 'Score: ' + correctCount + ' / ' + d.pairs.length; sc.style.display = 'block'; }
+    markExerciseDone(id);
+  }
+}
+
+function renderMatch(id) {
+  var d = matchData[id];
+  var lc = document.getElementById('m-' + id + '-L');
+  var rc = document.getElementById('m-' + id + '-R');
+  var sc = document.getElementById('sc-' + id);
+  if (!lc || !rc) return;
+  lc.innerHTML = '';
+  rc.innerHTML = '';
+  sc.style.display = 'none';
+
+  d.pairs.forEach(function(p, i) {
+    var li = document.createElement('div');
+    li.className = 'match-item';
+    li.textContent = p.left;
+    if (d.matched[i] !== undefined) {
+      li.classList.add(d.matched[i] ? 'matched-correct' : 'matched-incorrect');
+    } else if (d.selL === i) {
+      li.classList.add('selected');
+    }
+    li.onclick = function() {
+      if (d.matched[i] !== undefined) return;
+      d.selL = (d.selL === i) ? null : i;
+      if (d.selL !== null && d.selR !== null) { checkPair(id); return; }
+      renderMatch(id);
+    };
+    lc.appendChild(li);
+  });
+
+  d.rights.forEach(function(r, ri) {
+    var isMatchedKey = null;
+    Object.keys(d.matched).forEach(function(k) {
+      if (d.pairs[parseInt(k)].right === r) isMatchedKey = parseInt(k);
+    });
+    var item = document.createElement('div');
+    item.className = 'match-item';
+    item.textContent = r;
+    if (isMatchedKey !== null) {
+      item.classList.add(d.matched[isMatchedKey] ? 'matched-correct' : 'matched-incorrect');
+    } else if (d.selR === ri) {
+      item.classList.add('selected');
+    }
+    item.onclick = function() {
+      if (isMatchedKey !== null) return;
+      d.selR = (d.selR === ri) ? null : ri;
+      if (d.selL !== null && d.selR !== null) { checkPair(id); return; }
+      renderMatch(id);
+    };
+    rc.appendChild(item);
+  });
+}
+
+function checkPair(id) {
+  var d = matchData[id];
+  var li = d.selL;
+  var ri = d.selR;
+  if (li === null || ri === null) return;
+  var correct = d.pairs[li].right === d.rights[ri];
+  d.matched[li] = correct;
+  d.selL = null;
+  d.selR = null;
+  renderMatch(id);
+  saveExAnswers();
+  if (Object.keys(d.matched).length === d.pairs.length) {
+    var correctCount = Object.values(d.matched).filter(Boolean).length;
+    var sc = document.getElementById('sc-' + id);
+    sc.textContent = 'Score: ' + correctCount + ' / ' + d.pairs.length;
+    sc.style.display = 'block';
+    markExerciseDone(id);
+  }
+}
+
+function resetMatch(id) {
+  var d = matchData[id];
+  if (!d) return;
+  d.rights = shuffle(d.pairs.map(function(p) { return p.right; }));
+  d.selL = null; d.selR = null; d.matched = {};
+  saveExAnswers();
+  renderMatch(id);
+}
+
+// ======================================================
+// TEXT INPUT
+// ======================================================
+var tiData = {};
+
+function initTI(id, items) {
+  tiData[id] = items;
+  renderTI(id);
+}
+
+function renderTI(id) {
+  var items = tiData[id];
+  var container = document.getElementById('ti-' + id);
+  var sc = document.getElementById('sc-' + id);
+  if (!container) return;
+  container.innerHTML = '';
+  if (sc) sc.style.display = 'none';
+  var savedTI = (savedExAnswers.ti && savedExAnswers.ti[id]) ? savedExAnswers.ti[id] : null;
+  items.forEach(function(item, i) {
+    var div = document.createElement('div');
+    div.className = 'fill-sentence';
+    div.style.marginBottom = '10px';
+    var parts = item.prompt.split('___');
+    div.appendChild(document.createTextNode((i + 1) + '. ' + parts[0]));
+    var inp = document.createElement('input');
+    inp.type = 'text';
+    inp.className = 'text-input';
+    inp.placeholder = '...';
+    inp.dataset.answer = item.answer;
+    if (savedTI && savedTI.values && savedTI.values[i] !== undefined) {
+      inp.value = savedTI.values[i];
+    }
+    inp.oninput = function() { saveExAnswers(); };
+    div.appendChild(inp);
+    if (parts[1]) div.appendChild(document.createTextNode(parts[1]));
+    container.appendChild(div);
+  });
+  // Restore checked state (correct/incorrect styling and score)
+  if (savedTI && savedTI.checked) {
+    var inputs = container.querySelectorAll('.text-input');
+    var correct = 0;
+    inputs.forEach(function(inp) {
+      var val = inp.value.trim().toLowerCase();
+      var answers = inp.dataset.answer.split('/').map(function(a) { return a.trim().toLowerCase(); });
+      if (answers.indexOf(val) !== -1) { inp.classList.add('correct'); correct++; }
+      else inp.classList.add('incorrect');
+    });
+    if (sc) { sc.textContent = 'Score: ' + correct + ' / ' + inputs.length; sc.style.display = 'block'; }
+    markExerciseDone(id);
+  }
+}
+
+function checkTI(id) {
+  var container = document.getElementById('ti-' + id);
+  if (!container) return;
+  var inputs = container.querySelectorAll('.text-input');
+  var correct = 0;
+  inputs.forEach(function(inp) {
+    inp.classList.remove('correct', 'incorrect');
+    var val = inp.value.trim().toLowerCase();
+    var answers = inp.dataset.answer.split('/').map(function(a) { return a.trim().toLowerCase(); });
+    if (answers.indexOf(val) !== -1) { inp.classList.add('correct'); correct++; }
+    else inp.classList.add('incorrect');
+  });
+  var sc = document.getElementById('sc-' + id);
+  if (sc) { sc.textContent = 'Score: ' + correct + ' / ' + inputs.length; sc.style.display = 'block'; }
+  tiChecked[id] = true;
+  saveExAnswers();
+  markExerciseDone(id);
+}
+
+function resetTI(id) {
+  tiChecked[id] = false;
+  saveExAnswers();
+  renderTI(id);
+}
+
+// ======================================================
+// QUIZ
+// ======================================================
+var quizQs = [];
+var quizIdx = 0;
+var quizScore = 0;
+var quizDone = false;
+var quizCurrentChosen = null;
+
+function buildQuizQs() {
+  return [
+    // Unit 1
+    {q:"Which word means you booked a seat in advance?", options:["reservation","lounge","vehicle","gate"], answer:"reservation"},
+    {q:"What is the opposite of 'departure'?", options:["arrival","gate","lounge","take-off"], answer:"arrival"},
+    {q:"Which is the superlative of 'good'?", options:["the best","better","the most good","gooder"], answer:"the best"},
+    {q:"Which sentence uses a comparative correctly?", options:["Trains are faster than buses.","Trains are more fast than buses.","Trains are the fastest buses.","Trains is faster than buses."], answer:"Trains are faster than buses."},
+    {q:"You cannot connect to Wi-Fi. What do you say?", options:["I'm having trouble logging on.","I look forward to hearing from you.","Let me check I've understood.","I'd like to hand over to you."], answer:"I'm having trouble logging on."},
+    // Unit 2
+    {q:"A 'warehouse' is a place where you...", options:["store products","test scientists","design logos","manage workers"], answer:"store products"},
+    {q:"'The office is ___ small. We can't fit everyone in.'", options:["too","enough","very enough","so enough"], answer:"too"},
+    {q:"'We don't have ___ space for a meeting room.'", options:["enough","too","too much","too many"], answer:"enough"},
+    {q:"You did not hear clearly. You say:", options:["Could you repeat that?","Let's get started.","I'd like to hand over to...","On the agenda we have..."], answer:"Could you repeat that?"},
+    {q:"To open a meeting formally you say:", options:["Let's get started.","Could you repeat that?","So you mean...?","Did you say...?"], answer:"Let's get started."},
+    // Unit 3
+    {q:"'VAT' means:", options:["tax on goods","money gained","one local shop","a chain of stores"], answer:"tax on goods"},
+    {q:"Which is an irregular past simple?", options:["went","worked","arrived","ordered"], answer:"went"},
+    {q:"'She ___ working when I called.' (past continuous)", options:["was","is","were","did"], answer:"was"},
+    {q:"Which word means 'one local shop in a chain'?", options:["branch","profit","bill","charge"], answer:"branch"},
+    {q:"'___ of all, thank you for coming.' (presentation signposting)", options:["First","Finally","Then","Secondly"], answer:"First"},
+    // Unit 4
+    {q:"A 'permanent employee' has:", options:["a long-term contract","a limited contract","no hours","flexible hours only"], answer:"a long-term contract"},
+    {q:"'Have you ever ___ to Paris?' (present perfect)", options:["been","went","go","gone"], answer:"been"},
+    {q:"Which past participle is correct?", options:["written","writed","has write","have wrote"], answer:"written"},
+    {q:"You want to change a meeting time. You say:", options:["Do you mind if we fix another time?","I am delighted to confirm.","This is to confirm our meeting.","I look forward to seeing you."], answer:"Do you mind if we fix another time?"},
+    {q:"'___ out for me.' means that day is not possible:", options:["Friday's","Monday's go","Thursday can","Wednesday is"], answer:"Friday's"},
+    // Unit 5
+    {q:"A 'mobile wallet' is:", options:["an app that stores card info on your phone","a physical coin purse","a bank account","a store card"], answer:"an app that stores card info on your phone"},
+    {q:"'If interest rates increase, borrowing ___ go down.' (first conditional)", options:["will","would","going to","is"], answer:"will"},
+    {q:"'If you take your lunch to work, you ___ money.' (first conditional)", options:["will save","would save","save","saving"], answer:"will save"},
+    {q:"52% is best described as:", options:["over half","roughly a quarter","nearly three quarters","about two in five"], answer:"over half"},
+    {q:"'___ cash on delivery' means paying when goods arrive:", options:["Pay","Withdraw","Spend","Charge"], answer:"Pay"},
+    // Unit 6
+    {q:"To 'cooperate' means to:", options:["work together","have different opinions","manage people","believe in someone"], answer:"work together"},
+    {q:"The noun form of 'communicate' is:", options:["communication","communicating","communicament","communicator"], answer:"communication"},
+    {q:"'___ needs to check the report.' (indefinite pronoun, a person)", options:["Someone","Everyone","Something","Somewhere"], answer:"Someone"},
+    {q:"A colleague failed an interview. You say:", options:["I'm sorry it didn't work out.","I really like that idea!","Let's get started.","What a good idea!"], answer:"I'm sorry it didn't work out."},
+    {q:"To show you are positive about a colleague's idea in a meeting:", options:["I really like that idea!","Of course, there is a problem.","I'm just wondering about...","That might not be a bad idea."], answer:"I really like that idea!"},
+    // Unit 7
+    {q:"A 'prototype' in R&D is:", options:["the first version of a product","a simple drawing","feedback from users","the final product"], answer:"the first version of a product"},
+    {q:"'Guests ___ give their names.' (it is necessary)", options:["have to","can","don't have to","need"], answer:"have to"},
+    {q:"'They ___ use a key.' (it is not necessary)", options:["don't need to","can't","have to","must"], answer:"don't need to"},
+    {q:"In a sequence of instructions, what phrase introduces the very last step?", options:["The last step is to","After that,","You start by","Then, you"], answer:"The last step is to"},
+    {q:"In an online meeting, 'You keep cutting out' means:", options:["your audio keeps breaking up","your screen is blank","there is an echo","the background is noisy"], answer:"your audio keeps breaking up"},
+    // Unit 8
+    {q:"'Conservation' means:", options:["keeping nature safe","causing pollution","building factories","increasing traffic"], answer:"keeping nature safe"},
+    {q:"The noun form of 'pollute' is:", options:["pollution","polluting","polluted","polluter"], answer:"pollution"},
+    {q:"'People ___ drive in cities.' (it is a bad idea, advising against it)", options:["shouldn't","couldn't","might not","can't"], answer:"shouldn't"},
+    {q:"'Other cities ___ use this method.' (it is a possible option)", options:["could","should","must","have to"], answer:"could"},
+    {q:"When receiving feedback, a polite response is:", options:["I appreciate your comments.","Does anyone have a question?","So the question is about...","We're pleased with your progress."], answer:"I appreciate your comments."},
+    // Unit 9 – Career Choices
+    {q:"'Think outside the box' means:", options:["find creative, unconventional solutions","follow the rules carefully","set clear goals","work independently"], answer:"find creative, unconventional solutions"},
+    {q:"'You ought ___ update your online profile.' Choose the correct form:", options:["to","for","of","by"], answer:"to"},
+    {q:"'Why not try ___ a blog about your experience?' Choose the correct form:", options:["writing","to write","write","written"], answer:"writing"},
+    {q:"To 'build rapport' with someone means to:", options:["develop a friendly, comfortable relationship","test their transferable skills","give them career advice","ask them for help"], answer:"develop a friendly, comfortable relationship"},
+    {q:"'It's been really nice talking to you.' This phrase is used for:", options:["closing a conversation","starting a conversation","showing interest","asking a question"], answer:"closing a conversation"},
+    // Unit 10 – Business Sectors
+    {q:"The Tertiary sector is also known as:", options:["the service sector","the manufacturing sector","the primary sector","the automotive sector"], answer:"the service sector"},
+    {q:"Coal mining, gas extraction and oil drilling all belong to the:", options:["Primary sector","Secondary sector","Tertiary sector","Manufacturing sector"], answer:"Primary sector"},
+    {q:"'She ___ IT when she started her first business.' (background ongoing action)", options:["was studying","studied","is studying","has studied"], answer:"was studying"},
+    {q:"'Sorry to interrupt.' This expression is used for:", options:["asking permission to interrupt","accepting an interruption","preventing an interruption","going back to an earlier point"], answer:"asking permission to interrupt"},
+    {q:"When leaving a voicemail, the correct first step is to:", options:["identify yourself","give your phone number","state the reason for the call","say goodbye"], answer:"identify yourself"}
+  ];
+}
+
+function startQuiz() {
+  quizQs = shuffle(buildQuizQs());
+  quizIdx = 0;
+  quizScore = 0;
+  quizDone = false;
+  quizCurrentChosen = null;
+  document.getElementById('quiz-start-screen').style.display = 'none';
+  document.getElementById('quiz-active-screen').style.display = 'block';
+  document.getElementById('quiz-result-screen').style.display = 'none';
+  renderQuizQ();
+  saveQuizState();
+}
+
+function renderQuizQ() {
+  var q = quizQs[quizIdx];
+  document.getElementById('quiz-counter').textContent = 'Question ' + (quizIdx + 1) + ' of ' + quizQs.length;
+  document.getElementById('quiz-score-live').textContent = 'Score: ' + quizScore;
+  document.getElementById('quiz-prog').style.width = ((quizIdx / quizQs.length) * 100) + '%';
+  document.getElementById('quiz-q-text').textContent = q.q;
+  var optsDiv = document.getElementById('quiz-opts');
+  optsDiv.innerHTML = '';
+  var opts = shuffle(q.options);
+  opts.forEach(function(opt) {
+    var btn = document.createElement('button');
+    btn.className = 'quiz-opt';
+    btn.textContent = opt;
+    btn.onclick = function() { answerQuiz(opt, q.answer); };
+    optsDiv.appendChild(btn);
+  });
+  var fb = document.getElementById('quiz-feedback');
+  fb.style.display = 'none';
+  fb.className = 'quiz-feedback';
+  document.getElementById('quiz-next-btn').style.display = 'none';
+  quizDone = false;
+}
+
+function answerQuiz(chosen, correct) {
+  if (quizDone) return;
+  quizDone = true;
+  quizCurrentChosen = chosen;
+  document.querySelectorAll('.quiz-opt').forEach(function(btn) {
+    btn.classList.add('disabled');
+    if (btn.textContent === correct) btn.classList.add('correct');
+    else if (btn.textContent === chosen) btn.classList.add('incorrect');
+  });
+  var fb = document.getElementById('quiz-feedback');
+  fb.style.display = 'block';
+  if (chosen === correct) {
+    quizScore++;
+    fb.className = 'quiz-feedback ok';
+    fb.textContent = '\u2713 Correct!';
+  } else {
+    fb.className = 'quiz-feedback no';
+    fb.textContent = '\u2717 Incorrect. The answer is: ' + correct;
+  }
+  document.getElementById('quiz-score-live').textContent = 'Score: ' + quizScore;
+  var nb = document.getElementById('quiz-next-btn');
+  nb.style.display = 'inline-block';
+  nb.textContent = (quizIdx + 1 < quizQs.length) ? 'Next Question \u2192' : 'See Results';
+  saveQuizState();
+}
+
+function quizNext() {
+  quizIdx++;
+  quizCurrentChosen = null;
+  if (quizIdx < quizQs.length) {
+    renderQuizQ();
+    saveQuizState();
+  } else {
+    showQuizResult();
+  }
+}
+
+function showQuizResult() {
+  document.getElementById('quiz-active-screen').style.display = 'none';
+  document.getElementById('quiz-result-screen').style.display = 'block';
+  document.getElementById('quiz-prog').style.width = '100%';
+  localStorage.setItem('bp_quizState', JSON.stringify({screen:'result', quizScore:quizScore, quizTotal:quizQs.length}));
+  var pct = quizScore / quizQs.length;
+  var emoji, msg;
+  if (pct >= 0.9)      { emoji = '\uD83C\uDFC6'; msg = 'Outstanding! Excellent work!'; }
+  else if (pct >= 0.75){ emoji = '\uD83C\uDF1F'; msg = 'Great job! You know your stuff!'; }
+  else if (pct >= 0.6) { emoji = '\uD83D\uDC4D'; msg = 'Good effort! Keep practising!'; }
+  else if (pct >= 0.4) { emoji = '\uD83D\uDCDA'; msg = 'Keep studying \u2014 you\'re making progress!'; }
+  else                 { emoji = '\uD83D\uDCAA'; msg = 'Don\'t give up \u2014 review the units and try again!'; }
+  document.getElementById('result-emoji').textContent = emoji;
+  document.getElementById('result-score').textContent = quizScore;
+  document.getElementById('result-msg').textContent = msg;
+  markExerciseDone('quiz');
+}
+
+function restartQuiz() {
+  localStorage.removeItem('bp_quizState');
+  document.getElementById('quiz-result-screen').style.display = 'none';
+  document.getElementById('quiz-start-screen').style.display = 'block';
+}
+
+function saveQuizState() {
+  localStorage.setItem('bp_quizState', JSON.stringify({
+    screen: 'active',
+    quizQs: quizQs,
+    quizIdx: quizIdx,
+    quizScore: quizScore,
+    quizDone: quizDone,
+    quizCurrentChosen: quizCurrentChosen
+  }));
+}
+
+function restoreAnsweredQ(chosen, correct) {
+  quizDone = true;
+  document.querySelectorAll('.quiz-opt').forEach(function(btn) {
+    btn.classList.add('disabled');
+    if (btn.textContent === correct) btn.classList.add('correct');
+    else if (btn.textContent === chosen) btn.classList.add('incorrect');
+  });
+  var fb = document.getElementById('quiz-feedback');
+  fb.style.display = 'block';
+  if (chosen === correct) {
+    fb.className = 'quiz-feedback ok';
+    fb.textContent = '\u2713 Correct!';
+  } else {
+    fb.className = 'quiz-feedback no';
+    fb.textContent = '\u2717 Incorrect. The answer is: ' + correct;
+  }
+  document.getElementById('quiz-score-live').textContent = 'Score: ' + quizScore;
+  var nb = document.getElementById('quiz-next-btn');
+  nb.style.display = 'inline-block';
+  nb.textContent = (quizIdx + 1 < quizQs.length) ? 'Next Question \u2192' : 'See Results';
+}
+
+// ======================================================
+// OVERALL PROGRESS TRACKING
+// ======================================================
+var TOTAL_EXERCISES = 62;
+var completedExercises = {};
+
+function markExerciseDone(id) {
+  if (!completedExercises[id]) {
+    completedExercises[id] = true;
+    saveProgress();
+    updateProgressBar();
+  }
+}
+
+function saveProgress() {
+  localStorage.setItem('bp_progress', JSON.stringify(completedExercises));
+}
+
+function restoreProgress() {
+  var saved = localStorage.getItem('bp_progress');
+  if (saved) {
+    try { completedExercises = JSON.parse(saved); } catch(e) { completedExercises = {}; }
+  }
+  updateProgressBar();
+}
+
+function updateProgressBar() {
+  var count = Object.keys(completedExercises).length;
+  var pct = Math.round(count / TOTAL_EXERCISES * 100);
+  var fill = document.getElementById('overall-fill');
+  var pctEl = document.getElementById('overall-pct');
+  if (fill) fill.style.width = pct + '%';
+  if (pctEl) pctEl.textContent = count + ' / ' + TOTAL_EXERCISES + ' exercises completed (' + pct + '%)';
+}
+
+function restoreQuizState() {
+  var name = localStorage.getItem('bp_studentName');
+  var id = localStorage.getItem('bp_studentId');
+  var email = localStorage.getItem('bp_studentEmail');
+  if (name) document.getElementById('studentName').value = name;
+  if (id) document.getElementById('studentId').value = id;
+  if (email) document.getElementById('studentEmail').value = email;
+
+  var saved = localStorage.getItem('bp_quizState');
+  if (!saved) return;
+  var state;
+  try { state = JSON.parse(saved); } catch(e) { return; }
+
+  if (state.screen === 'active' && state.quizQs && state.quizQs.length) {
+    quizQs = state.quizQs;
+    quizIdx = state.quizIdx;
+    quizScore = state.quizScore;
+    quizCurrentChosen = state.quizCurrentChosen;
+    showQuiz();
+    document.getElementById('quiz-start-screen').style.display = 'none';
+    document.getElementById('quiz-active-screen').style.display = 'block';
+    document.getElementById('quiz-result-screen').style.display = 'none';
+    renderQuizQ();
+    if (state.quizDone && quizCurrentChosen !== null) {
+      restoreAnsweredQ(quizCurrentChosen, quizQs[quizIdx].answer);
+    }
+  } else if (state.screen === 'result') {
+    quizScore = state.quizScore;
+    quizQs = { length: state.quizTotal };
+    showQuiz();
+    document.getElementById('quiz-start-screen').style.display = 'none';
+    document.getElementById('quiz-active-screen').style.display = 'none';
+    document.getElementById('quiz-result-screen').style.display = 'block';
+    document.getElementById('quiz-prog').style.width = '100%';
+    var pct = quizScore / state.quizTotal;
+    var emoji, msg;
+    if (pct >= 0.9)      { emoji = '\uD83C\uDFC6'; msg = 'Outstanding! Excellent work!'; }
+    else if (pct >= 0.75){ emoji = '\uD83C\uDF1F'; msg = 'Great job! You know your stuff!'; }
+    else if (pct >= 0.6) { emoji = '\uD83D\uDC4D'; msg = 'Good effort! Keep practising!'; }
+    else if (pct >= 0.4) { emoji = '\uD83D\uDCDA'; msg = "Keep studying \u2014 you're making progress!"; }
+    else                 { emoji = '\uD83D\uDCAA'; msg = "Don't give up \u2014 review the units and try again!"; }
+    document.getElementById('result-emoji').textContent = emoji;
+    document.getElementById('result-score').textContent = quizScore;
+    document.getElementById('result-msg').textContent = msg;
+  }
+}
+
+loadExAnswers();
+restoreQuizState();
+restoreProgress();
+
+// ======================================================
+// DATA INITIALIZATION
+// ======================================================
+
+// --- UNIT 1 ---
+initMatch('u0m1', [
+  {left:'boat', right:'travels on water'},
+  {left:'coach', right:'comfortable long-distance bus'},
+  {left:'lounge', right:'waiting area at an airport'},
+  {left:'B&B', right:'budget accommodation with breakfast included'},
+  {left:'luxury hotel', right:'most expensive and comfortable accommodation'},
+  {left:'youth hostel', right:'cheapest option, usually shared rooms'}
+]);
+
+initFill('u0f1',
+  ['long-haul','take-off','departure','delayed','local'],
+  [
+    {text:'A short trip is short-haul; a very long trip is ___.', answer:'long-haul'},
+    {text:'Landing is the opposite of ___.', answer:'take-off'},
+    {text:'Arrival is the opposite of ___.', answer:'departure'},
+    {text:'On-time is the opposite of ___.', answer:'delayed'},
+    {text:'Abroad is the opposite of ___.', answer:'local'}
+  ]
+);
+
+initMCQ('u0q1', [
+  {q:"A hotel with a spa, fine dining, and a concierge service is a:", options:["luxury hotel","budget hotel","youth hostel","B&B"], answer:"luxury hotel"},
+  {q:"A rented apartment is useful because:", options:["it feels like home and often has a kitchen","it is always the cheapest option","it always includes breakfast","it is available in every city"], answer:"it feels like home and often has a kitchen"},
+  {q:"Which accommodation type is usually the cheapest?", options:["youth hostel","business hotel","holiday resort","rented apartment"], answer:"youth hostel"}
+]);
+
+initMCQ('u0q2', [
+  {q:"Planes are ___ trains. (fast)", options:["faster than","more fast than","the fastest","as fast as"], answer:"faster than"},
+  {q:"Business class is ___ economy class. (expensive)", options:["more expensive than","expensiver than","the most expensive","expensive than"], answer:"more expensive than"},
+  {q:"Taxis are ___ buses for short journeys. (convenient)", options:["more convenient than","convenienter than","the most convenient","convenient as"], answer:"more convenient than"},
+  {q:"The coach is ___ way to travel between cities. (cheap)", options:["the cheapest","cheaper","most cheap","the most cheap"], answer:"the cheapest"}
+]);
+
+initTI('u0t1', [
+  {prompt:"Flying is ___ (good) way to travel long distances.", answer:"the best"},
+  {prompt:"This is ___ (bad) hotel I have ever stayed in.", answer:"the worst"},
+  {prompt:"Tokyo is ___ (big) city I have visited.", answer:"the biggest"},
+  {prompt:"The train is ___ (expensive) option available here.", answer:"the most expensive"}
+]);
+
+initMatch('u0m2', [
+  {left:"Where do you come from?", right:"I'm from Turkey."},
+  {left:"How long was your trip?", right:"About an hour."},
+  {left:"What do you think of this city?", right:"It's very nice."},
+  {left:"Do you know Prague?", right:"A little. I went there on holiday."},
+  {left:"What are you doing in Dublin?", right:"I'm starting a new job."}
+]);
+
+initMCQ('u0q3', [
+  {q:"Your colleague cannot connect to the internet. They say:", options:["I can't connect to the Wi-Fi.","I look forward to hearing from you.","Could you repeat that?","Let's get started."], answer:"I can't connect to the Wi-Fi."},
+  {q:"You want to help set up a colleague's email. You say:", options:["I'll set that up for you.","I'm having trouble logging on.","Could you tell me?","Try logging on again."], answer:"I'll set that up for you."},
+  {q:"The connection problem may be temporary. You say:", options:["Try logging on again.","I'm having problems with this.","You need to use the app.","I don't know how to set up email."], answer:"Try logging on again."}
+]);
+
+// --- UNIT 2 ---
+initFill('u1f1',
+  ['motorway','headquarters','warehouse','lab','studio','rent','factory','access'],
+  [
+    {text:'The company\'s ___ is in London where all major decisions are made.', answer:'headquarters'},
+    {text:'Scientists test experiments in a ___.', answer:'lab'},
+    {text:'We store all our products in a large ___ outside the city.', answer:'warehouse'},
+    {text:'Designers work in a ___ with good natural light.', answer:'studio'},
+    {text:'The ___ connects the two cities, and you can travel at 120 km/h.', answer:'motorway'},
+    {text:'___ to the office is excellent — there is a train every 10 minutes.', answer:'access'},
+    {text:'The ___ produces 500 cars per day using automated machines.', answer:'factory'},
+    {text:'Office ___ in the city centre is very expensive per square metre.', answer:'rent'}
+  ]
+);
+
+initMCQ('u1q1', [
+  {q:"'Access' to a location means:", options:["how easy it is to reach","the cost of renting it","the size of the building","the number of employees"], answer:"how easy it is to reach"},
+  {q:"A 'headquarters' is:", options:["the main office of a company","a place to store products","a designer's workspace","a scientist's testing room"], answer:"the main office of a company"},
+  {q:"'Rent' is:", options:["money paid regularly to use an office or space","money gained from sales","tax paid on goods","a type of vehicle"], answer:"money paid regularly to use an office or space"}
+]);
+
+initMCQ('u1q2', [
+  {q:"The office is ___ noisy. We cannot concentrate.", options:["too","enough","very enough","too much"], answer:"too"},
+  {q:"There are not ___ chairs for everyone.", options:["enough","too","too many","too much"], answer:"enough"},
+  {q:"The room is big ___. We can fit 20 people in it.", options:["enough","too","too big","not enough"], answer:"enough"},
+  {q:"There is ___ traffic on this road. It takes two hours to arrive.", options:["too much","too many","enough","too"], answer:"too much"},
+  {q:"There are ___ desks in the office. Three people have nowhere to sit.", options:["too many","too much","enough","not too"], answer:"too many"}
+]);
+
+initFill('u1f2',
+  ['too hot','too many','not enough','big enough','too much'],
+  [
+    {text:'The office is ___. Please open a window.', answer:'too hot'},
+    {text:'There are ___ people in this small meeting room.', answer:'too many'},
+    {text:'We have ___ time to finish the project today.', answer:'not enough'},
+    {text:'The car park is ___ for all our staff.', answer:'big enough'},
+    {text:'There is ___ noise coming from the street outside.', answer:'too much'}
+  ]
+);
+
+initMatch('u1m1', [
+  {left:"You didn't hear something clearly.", right:"Could you repeat that?"},
+  {left:"You want to check your understanding of what was said.", right:"So you mean...?"},
+  {left:"You want to confirm something specific.", right:"Did you say...?"},
+  {left:"You are summarising to make sure you understood everything.", right:"Let me check I've understood."}
+]);
+
+initMCQ('u1q3', [
+  {q:"To open a meeting you say:", options:["Let's get started.","I'm sorry it didn't work out.","I'd like to confirm.","Could you repeat that?"], answer:"Let's get started."},
+  {q:"To explain why the meeting is happening you say:", options:["The purpose of today's meeting is...","On the agenda we have...","I'd like to hand over to...","Let's get started."], answer:"The purpose of today's meeting is..."},
+  {q:"To pass control to another speaker you say:", options:["I'd like to hand over to...","The purpose of today's meeting is...","On the agenda we have...","Did you say...?"], answer:"I'd like to hand over to..."}
+]);
+
+// --- UNIT 3 ---
+initMCQ('u2q1', [
+  {q:"A 'chain' of shops means:", options:["a group of shops with the same owner","one shop that sells chains","a very large shop","a shop that opened recently"], answer:"a group of shops with the same owner"},
+  {q:"'Profit' is:", options:["money gained after paying all costs","money paid to the government","the price of a product","the tax on goods"], answer:"money gained after paying all costs"},
+  {q:"To 'serve customers' means to:", options:["help and assist customers","charge them money","send them a bill","order food for them"], answer:"help and assist customers"},
+  {q:"Which is NOT a type of retail shop?", options:["warehouse","bakery","pharmacy","bookshop"], answer:"warehouse"}
+]);
+
+initMatch('u2m1', [
+  {left:"charge", right:"customers"},
+  {left:"make", right:"a profit"},
+  {left:"pay", right:"the bill"},
+  {left:"spend", right:"money"},
+  {left:"order", right:"food"},
+  {left:"shop", right:"online"}
+]);
+
+initFill('u2f1',
+  ['went','arrived','ordered','sent','rang','paid','wrote','met'],
+  [
+    {text:'We ___ to a new restaurant last night.', answer:'went'},
+    {text:'She ___ at the office early this morning.', answer:'arrived'},
+    {text:'He ___ the food online yesterday.', answer:'ordered'},
+    {text:'I ___ the invoice by email last week.', answer:'sent'},
+    {text:'The manager ___ the store three times about the delay.', answer:'rang'},
+    {text:'They ___ the bill by credit card.', answer:'paid'},
+    {text:'She ___ a report about the new shop.', answer:'wrote'},
+    {text:'We ___ the new supplier at the trade conference.', answer:'met'}
+  ]
+);
+
+initMCQ('u2q2', [
+  {q:"'She ___ working when I called.' (past continuous)", options:["was","is","were","did"], answer:"was"},
+  {q:"'They ___ discussing the new shop when the manager arrived.'", options:["were","was","are","did"], answer:"were"},
+  {q:"'I ___ not paying attention when she spoke.'", options:["was","were","did","am"], answer:"was"}
+]);
+
+initMatch('u2m2', [
+  {left:"Introduce your first point", right:"First of all, ... / I'd like to start by ..."},
+  {left:"Move to the next point", right:"Let's move on to ... / Then ..."},
+  {left:"Connect to the following topic", right:"That brings me to ..."},
+  {left:"Add a further point", right:"Secondly, ... / And ..."},
+  {left:"Finish the presentation", right:"Finally, ... / Just to sum up ..."}
+]);
+
+// --- UNIT 4 ---
+initMCQ('u3q1', [
+  {q:"A 'temporary worker' is employed for:", options:["a limited period of time","the whole of their career","35-40 hours per week","flexible hours only"], answer:"a limited period of time"},
+  {q:"'Flexible hours' means:", options:["you can choose when to work","you must work exactly 9-5","you work from home all week","you have a fixed schedule that never changes"], answer:"you can choose when to work"},
+  {q:"An 'intern' is:", options:["a student or trainee working for experience","a retired person","someone who is unemployed","a permanent full-time employee"], answer:"a student or trainee working for experience"}
+]);
+
+initFill('u3f1',
+  ['employed','unemployed','retired','self-employed','staff'],
+  [
+    {text:'She left the company last year and is now ___.', answer:'unemployed'},
+    {text:'He works for himself — he is ___.', answer:'self-employed'},
+    {text:'All ___ must attend the mandatory safety training.', answer:'staff'},
+    {text:'My grandfather stopped working at 65. He is now ___.', answer:'retired'},
+    {text:'She is ___ by a large bank in the city centre.', answer:'employed'}
+  ]
+);
+
+initTI('u3t1', [
+  {prompt:"go \u2192 ___", answer:"gone"},
+  {prompt:"buy \u2192 ___", answer:"bought"},
+  {prompt:"give \u2192 ___", answer:"given"},
+  {prompt:"meet \u2192 ___", answer:"met"},
+  {prompt:"read \u2192 ___", answer:"read"},
+  {prompt:"see \u2192 ___", answer:"seen"},
+  {prompt:"sell \u2192 ___", answer:"sold"},
+  {prompt:"speak \u2192 ___", answer:"spoken"},
+  {prompt:"take \u2192 ___", answer:"taken"},
+  {prompt:"write \u2192 ___", answer:"written"}
+]);
+
+initMCQ('u3q2', [
+  {q:"'Have you ever ___ to New York?' (present perfect)", options:["been","went","go","be"], answer:"been"},
+  {q:"'She ___ worked at Barclays for five years.'", options:["has","have","is","did"], answer:"has"},
+  {q:"'I ___ never ___ sushi.' (present perfect negative)", options:["have / eaten","has / ate","did / eat","have / ate"], answer:"have / eaten"}
+]);
+
+initMCQ('u3q3', [
+  {q:"You want to change a meeting time politely. You say:", options:["Do you mind if we fix another time?","I am delighted to confirm.","Feel free to call me.","Unfortunately I am unable to attend."], answer:"Do you mind if we fix another time?"},
+  {q:"You are calling to discuss the meeting. You begin:", options:["I'm calling about our meeting on Tuesday.","I'm free on Wednesday morning.","Sorry to bother you.","Thanks for being so flexible."], answer:"I'm calling about our meeting on Tuesday."},
+  {q:"You want to move the meeting to an earlier time. You say:", options:["Can we bring it forward?","Do you want to postpone it?","Friday's out for me.","How does the afternoon suit you?"], answer:"Can we bring it forward?"}
+]);
+
+initMatch('u3m1', [
+  {left:"Confirming a meeting formally", right:"This is to confirm our meeting."},
+  {left:"Expressing happiness to confirm", right:"I am delighted to confirm."},
+  {left:"Inviting further contact", right:"Feel free to call me."},
+  {left:"Saying you cannot attend", right:"Unfortunately, I am unable to attend."},
+  {left:"Closing an arrangement email", right:"I look forward to seeing you."}
+]);
+
+// --- UNIT 5 ---
+initMCQ('u4q1', [
+  {q:"'Currency' means:", options:["the type of money a country uses","the act of paying","a small unit of money","the financial system"], answer:"the type of money a country uses"},
+  {q:"A 'cashless economy' means:", options:["no coins or notes are used","there is no money at all","only cash is used","the bank controls all transactions"], answer:"no coins or notes are used"},
+  {q:"'Tax revenues' are:", options:["money collected by the government","money you borrow from a bank","money stored in a digital wallet","money gained from product sales"], answer:"money collected by the government"},
+  {q:"Which is NOT a payment method?", options:["cash dispenser","bank transfer","credit card","mobile phone payment"], answer:"cash dispenser"}
+]);
+
+initFill('u4f1',
+  ['cash flow','cash register','petty cash','cash dispenser','short of cash'],
+  [
+    {text:'I need to get some money — let me find a ___.', answer:'cash dispenser'},
+    {text:'The shop uses a ___ to process each customer payment.', answer:'cash register'},
+    {text:'The company has excellent ___. Money comes in regularly every month.', answer:'cash flow'},
+    {text:'We use ___ to pay for small office items like pens and paper.', answer:'petty cash'},
+    {text:'Sorry, I cannot pay right now — I am ___ this week.', answer:'short of cash'}
+  ]
+);
+
+initMCQ('u4q2', [
+  {q:"'If interest rates increase, borrowing ___ go down.' (first conditional)", options:["will","would","is going to","might"], answer:"will"},
+  {q:"'If you take your lunch to work, you ___ money.'", options:["will save","would save","saves","are saving"], answer:"will save"},
+  {q:"'If she ___ early, she will catch the train.' (first conditional)", options:["leaves","will leave","left","is leaving"], answer:"leaves"}
+]);
+
+initFill('u4f2',
+  ['will go down','spend','don\'t use','will save','use'],
+  [
+    {text:'If you ___ a budgeting app, you can track your spending easily.', answer:'use'},
+    {text:'If prices go up, people ___ less on luxury items.', answer:'will go down'},
+    {text:'If you ___ public transport, parking will cost you more money.', answer:"don't use"},
+    {text:'If they ___ less energy each month, their costs will be lower.', answer:'spend'},
+    {text:'If you plan your budget carefully, you ___ more money each month.', answer:'will save'}
+  ]
+);
+
+initMCQ('u4q3', [
+  {q:"How do you best describe 0.95%?", options:["under one percent","roughly a quarter","over half","nearly three quarters"], answer:"under one percent"},
+  {q:"How do you best describe 23.5%?", options:["roughly a quarter","over half","about two in five","nearly three quarters"], answer:"roughly a quarter"},
+  {q:"How do you best describe 52%?", options:["over half","roughly a quarter","about two in five","nearly three quarters"], answer:"over half"},
+  {q:"How do you best describe 73.9%?", options:["nearly three quarters","over half","roughly a quarter","about two in five"], answer:"nearly three quarters"},
+  {q:"How do you best describe 39.4%?", options:["about two in five","over half","roughly a quarter","nearly three quarters"], answer:"about two in five"}
+]);
+
+// --- UNIT 6 ---
+initMCQ('u5q1', [
+  {q:"'Reliable' means:", options:["always does what they say they will do","has lots of professional experience","treats others with respect","believes that others are trustworthy"], answer:"always does what they say they will do"},
+  {q:"'Conflict' in a team means:", options:["a serious problem or disagreement","a decision that everyone accepts","working well together","treating colleagues with respect"], answer:"a serious problem or disagreement"},
+  {q:"'Management' is:", options:["controlling and organising a team or business","trusting your colleagues to do their jobs","having different opinions about something","working cooperatively toward a goal"], answer:"controlling and organising a team or business"}
+]);
+
+initMatch('u5m1', [
+  {left:"agree", right:"agreement"},
+  {left:"argue", right:"argument"},
+  {left:"communicate", right:"communication"},
+  {left:"cooperate", right:"cooperation"},
+  {left:"disagree", right:"disagreement"},
+  {left:"manage", right:"management"}
+]);
+
+initMCQ('u5q2', [
+  {q:"'___ needs to review this report.' (a person, we do not know who)", options:["Someone","Everyone","Something","Somewhere"], answer:"Someone"},
+  {q:"'___ was at the conference.' (all people were there)", options:["Everyone","Someone","Everything","Everywhere"], answer:"Everyone"},
+  {q:"'I left my bag ___.' (a place, we do not know where)", options:["somewhere","something","someone","everywhere"], answer:"somewhere"},
+  {q:"'___ is ready for the product launch.' (all things are ready)", options:["Everything","Everyone","Something","Somewhere"], answer:"Everything"}
+]);
+
+initFill('u5f1',
+  ['someone','everyone','something','somewhere','everything'],
+  [
+    {text:'___ in the team agreed with the new plan.', answer:'everyone'},
+    {text:'___ needs to update the shared project file.', answer:'someone'},
+    {text:'I put my phone ___ in the office but I cannot find it.', answer:'somewhere'},
+    {text:'___ went wrong with the presentation software before the meeting.', answer:'something'},
+    {text:'___ is prepared for tomorrow — we are ready to start.', answer:'everything'}
+  ]
+);
+
+initMCQ('u5q3', [
+  {q:"Your colleague did not get the job they wanted. You say:", options:["I'm sorry it didn't work out.","I really like that idea!","Let's get started.","What a good idea!"], answer:"I'm sorry it didn't work out."},
+  {q:"You want to encourage your colleague to try again. You say:", options:["You can always try again.","Of course, there is the problem of cost.","I'm just wondering about...","That might not be a bad idea."], answer:"You can always try again."},
+  {q:"You want to show you understand how important it was to them:", options:["I know how important it was to you.","I'm sorry it didn't work out.","Look at it this way:","It sounds like you put in a lot of work."], answer:"I know how important it was to you."}
+]);
+
+initMatch('u5m2', [
+  {left:"Show enthusiasm for a colleague's idea", right:"I really like that idea! / What a good idea!"},
+  {left:"Introduce a related point in discussion", right:"And while we're on the subject..."},
+  {left:"Mention a potential problem gently", right:"Of course, there is the problem of cost."},
+  {left:"Express gentle hesitation or concern", right:"I'm just wondering about..."},
+  {left:"Suggest something might actually work", right:"That might not be such a bad idea."}
+]);
+
+// --- UNIT 7 ---
+initMCQ('u6q1', [
+  {q:"A 'brief' in R&D is:", options:["a document stating the problem and goal","a simple drawing of ideas","feedback collected from users","the first working version of a product"], answer:"a document stating the problem and goal"},
+  {q:"'Sketches' in the design process are:", options:["simple drawings of early ideas","the first working prototype","final improvements to the product","user feedback collection forms"], answer:"simple drawings of early ideas"},
+  {q:"To 'launch' a product means to:", options:["make it available to buy","test it for the first time","write the initial design brief","collect and analyse user feedback"], answer:"make it available to buy"},
+  {q:"'Feedback' in R&D means:", options:["opinions from users about the product","the very first version of the product","simple design drawings and sketches","the answers to key design problems"], answer:"opinions from users about the product"}
+]);
+
+initMatch('u6m1', [
+  {left:"designers", right:"create and develop the product"},
+  {left:"product testers", right:"give feedback on the prototype"},
+  {left:"consumers", right:"purchase the finished product"}
+]);
+
+initMCQ('u6q2', [
+  {q:"'Guests ___ choose facial recognition.' (it is possible — optional)", options:["can","have to","need to","must"], answer:"can"},
+  {q:"'Guests ___ give their names.' (it is necessary — required)", options:["have to","can","don't have to","could"], answer:"have to"},
+  {q:"'They ___ say which language they speak.' (it is not necessary)", options:["don't have to","have to","can't","need to"], answer:"don't have to"},
+  {q:"'They ___ use a traditional key.' (it is not necessary)", options:["don't need to","can","have to","must"], answer:"don't need to"}
+]);
+
+initFill('u6f1',
+  ['can','have to','can\'t','don\'t have to','need to'],
+  [
+    {text:'Members ___ use the gym at any time — it is open 24 hours a day.', answer:'can'},
+    {text:'All visitors ___ sign in at reception. It is a security requirement.', answer:'have to'},
+    {text:'You ___ take photos inside the lab. It is not permitted.', answer:"can't"},
+    {text:'Staff ___ wear a uniform here — smart casual clothing is fine.', answer:"don't have to"},
+    {text:'You ___ download the app before attending your first session.', answer:'need to'}
+  ]
+);
+
+initMCQ('u6q3', [
+  {q:"Which phrase introduces the FIRST step in instructions?", options:["You start by clicking...","After that,","The next step is to","Once you've done that,"], answer:"You start by clicking..."},
+  {q:"Which phrase connects step 2 to step 3 in a sequence?", options:["Then, you","You start by clicking...","The last step is to","When you've completed all the steps"], answer:"Then, you"},
+  {q:"Which phrase introduces the FINAL step?", options:["The last step is to","After that,","You start by clicking...","Then, you"], answer:"The last step is to"}
+]);
+
+initMatch('u6m2', [
+  {left:"Screen is blank.", right:"Have you switched on your webcam?"},
+  {left:"Audio keeps breaking up.", right:"Would you mind hanging up and I'll call you back?"},
+  {left:"Lot of background noise.", right:"Could you move to a quieter location?"},
+  {left:"Echo on the call.", right:"Can you check your audio settings?"},
+  {left:"Connection is bad.", right:"Can you check your internet connection?"}
+]);
+
+// --- UNIT 8 ---
+initMCQ('u7q1', [
+  {q:"'Conservation' means:", options:["keeping nature safe","causing damage to ecosystems","building more roads","increasing levels of pollution"], answer:"keeping nature safe"},
+  {q:"Which word means 'a big change caused by something'?", options:["impact","reduction","protection","recycling"], answer:"impact"},
+  {q:"'Recycled' materials are:", options:["made from previously used materials","completely new and unused materials","very expensive raw materials","natural untouched materials from the ground"], answer:"made from previously used materials"},
+  {q:"Which is NOT a natural place from Unit 8?", options:["congestion charge","forest","waterfall","national park"], answer:"congestion charge"}
+]);
+
+initMatch('u7m1', [
+  {left:"conserve", right:"conservation"},
+  {left:"damage", right:"damage"},
+  {left:"destroy", right:"destruction"},
+  {left:"protect", right:"protection"},
+  {left:"pollute", right:"pollution"},
+  {left:"reduce", right:"reduction"}
+]);
+
+initMCQ('u7q2', [
+  {q:"'People ___ drive in cities.' (it is a bad idea — advising against it)", options:["shouldn't","couldn't","might not","can't"], answer:"shouldn't"},
+  {q:"'Other cities ___ use this method.' (it is a possible option)", options:["could","should","must","have to"], answer:"could"},
+  {q:"'You ___ spend more on public transport.' (it is a good idea — recommending it)", options:["should","could","shouldn't","must"], answer:"should"}
+]);
+
+initFill('u7f1',
+  ['should','shouldn\'t','could'],
+  [
+    {text:'Companies ___ reduce their plastic packaging. It is a good idea.', answer:'should'},
+    {text:'People ___ leave litter in national parks. It is a bad idea.', answer:"shouldn't"},
+    {text:'We ___ introduce more cycle lanes as one possible option.', answer:'could'},
+    {text:'The government ___ invest more in electric bus networks.', answer:'should'},
+    {text:'Cities ___ ban single-use plastics to help reduce waste.', answer:'could'}
+  ]
+);
+
+initMCQ('u7q3', [
+  {q:"Your manager says 'You're great with technology.' This is:", options:["positive feedback","negative feedback","a question about your skills","a recommendation for training"], answer:"positive feedback"},
+  {q:"You receive feedback from your manager. You respond:", options:["I appreciate your comments.","Does anyone have a question?","So the question is about...","We're pleased with your progress."], answer:"I appreciate your comments."},
+  {q:"You mostly agree with the feedback but not completely. You say:", options:["I mostly agree with your assessment.","That's not right at all.","I totally disagree with that.","Does that answer your question?"], answer:"I mostly agree with your assessment."},
+  {q:"You want to politely challenge a piece of feedback:", options:["That's an interesting idea, but...","I appreciate your comments.","I'd like to try and do that in the future.","We're pleased with your progress."], answer:"That's an interesting idea, but..."}
+]);
+
+initMatch('u7m2', [
+  {left:"Open the Q&A session", right:"Does anyone have a question?"},
+  {left:"Summarise a question from the audience", right:"So the question is about..."},
+  {left:"Acknowledge a good question", right:"It's a good question, thanks."},
+  {left:"Check that your answer helped", right:"Does that answer your question?"},
+  {left:"You do not know the answer", right:"I'm not sure I can answer that."}
+]);
+
+// --- UNIT 9: CAREER CHOICES ---
+initMatch('u8m1', [
+  {left:'think outside the box', right:'find creative, unconventional solutions'},
+  {left:'a can-do attitude', right:'a positive, willing approach to any task'},
+  {left:'set goals', right:'plan specific targets you want to achieve'},
+  {left:'critical thinking', right:'carefully analyse information before deciding'},
+  {left:'determination', right:'continue working hard despite difficulties'},
+  {left:'reliability', right:'being consistently trustworthy and dependable'}
+]);
+
+initFill('u8f1',
+  ['determination','ambitious','resourceful','reliable','enthusiastic','authentic'],
+  [
+    {text:'She never gives up when things are difficult — she shows great ___.', answer:'determination'},
+    {text:'He wants to reach the top of the company one day — he is very ___.', answer:'ambitious'},
+    {text:'She always finds creative solutions with limited resources — she is very ___.', answer:'resourceful'},
+    {text:'You can always count on him to complete his work on time — he is ___.', answer:'reliable'},
+    {text:'She shows great energy and passion for her job — she is very ___.', answer:'enthusiastic'},
+    {text:'People trust him because he is always genuine and ___.', answer:'authentic'}
+  ]
+);
+
+initMCQ('u8q1', [
+  {q:"'You decided to save money for a holiday a year in advance.' This shows you can:", options:["think outside the box","set goals","be reliable","use critical thinking"], answer:"set goals"},
+  {q:"'You carefully checked information you found online before using it.' This shows:", options:["determination","reliability","critical thinking","a can-do attitude"], answer:"critical thinking"},
+  {q:"'You completed a very difficult project without complaining.' This shows:", options:["resourcefulness","set goals","a can-do attitude","critical thinking"], answer:"a can-do attitude"},
+  {q:"Which of these is a transferable skill?", options:["knowing only one specific piece of software","speaking only your native language","adaptability across different roles and tasks","working only in one industry"], answer:"adaptability across different roles and tasks"}
+]);
+
+initFill('u8f2',
+  ['should','could','Why','How','ought to','try'],
+  [
+    {text:'You ___ update your CV with more specific examples from your experience.', answer:'should'},
+    {text:'You ___ ask your teacher for help with your online profile.', answer:'could'},
+    {text:"___ don't you join some professional networking groups online?", answer:'Why'},
+    {text:'___ about volunteering to show your transferable skills?', answer:'How'},
+    {text:'You ___ include examples from your personal life as well.', answer:'ought to'},
+    {text:'Why not ___ writing a blog about your industry experience?', answer:'try'}
+  ]
+);
+
+initMCQ('u8q2', [
+  {q:"Why don't you ___ an email to some companies?", options:["send","to send","sending","sent"], answer:"send"},
+  {q:"How about ___ your own website to show your skills?", options:["set up","to set up","setting up","sets up"], answer:"setting up"},
+  {q:"You should ___ the companies you're interested in.", options:["researching","to research","research","researched"], answer:"research"},
+  {q:"Why not try ___ a video for your LinkedIn profile?", options:["make","to make","making","makes"], answer:"making"},
+  {q:"You ought ___ spend some time improving your online profile.", options:["spend","to spend","spending","to spending"], answer:"to spend"}
+]);
+
+initMatch('u8m2', [
+  {left:'Good morning. How are you enjoying the fair?', right:'starting a conversation'},
+  {left:'That sounds really interesting.', right:'showing interest in what someone says'},
+  {left:"It's been really nice talking to you.", right:'closing a conversation politely'},
+  {left:'Could I ask you a few questions about your company?', right:'politely requesting more time to speak'},
+  {left:'Right. Uh-huh.', right:'giving brief signals that you are listening'},
+  {left:'Thank you for your time. I really appreciate it.', right:'ending the conversation with thanks'}
+]);
+
+initMCQ('u8q3', [
+  {q:"To 'build rapport' with a new colleague means to:", options:["ask them for advice","develop a friendly, comfortable relationship","test their knowledge","give them feedback"], answer:"develop a friendly, comfortable relationship"},
+  {q:"A job requiring creative, unconventional thinking needs someone who can:", options:["be reliable","set goals","think outside the box","be authentic"], answer:"think outside the box"},
+  {q:"Which phrase is used to CLOSE a networking conversation?", options:["Good morning. How are you enjoying the event?","Could I ask you a few questions?","Tell me more about your role.","It's been really nice talking to you."], answer:"It's been really nice talking to you."},
+  {q:"If a job ad says 'must be reliable', the employer wants someone who:", options:["is always enthusiastic","can work alone","can always be counted on","sets high goals"], answer:"can always be counted on"}
+]);
+
+// --- UNIT 10: BUSINESS SECTORS ---
+initMatch('u9m1', [
+  {left:'Primary sector', right:'working directly with natural resources like agriculture and mining'},
+  {left:'Secondary sector', right:'using raw materials to manufacture and build products'},
+  {left:'Tertiary sector', right:'the service sector, including retail, tourism and finance'},
+  {left:'automotive industry', right:'makes and sells cars and other vehicles'},
+  {left:'retail industry', right:'sells products directly to consumers in shops'},
+  {left:'manufacturing', right:'the process of making goods in large quantities in factories'}
+]);
+
+initFill('u9f1',
+  ['service sector','automotive','manufacturing','retail','transportation'],
+  [
+    {text:"Japan's ___, which includes finance, trade, tourism and entertainment, is the largest part of its economy.", answer:'service sector'},
+    {text:'The ___ industry, which makes and sells cars and vehicles, has been particularly successful in Japan.', answer:'automotive'},
+    {text:'Furniture makers, steel factories and textile mills are all part of the ___ sector.', answer:'manufacturing'},
+    {text:'Clothes shops, restaurants and supermarkets are all part of the ___ industry.', answer:'retail'},
+    {text:'Airlines, courier services and ports are all part of the ___ industry.', answer:'transportation'}
+  ]
+);
+
+initMCQ('u9q1', [
+  {q:"A bank, a credit card company and an insurance agent all belong to:", options:["Primary sector","Secondary sector","Tertiary sector","Manufacturing sector"], answer:"Tertiary sector"},
+  {q:"Coal mining, gas extraction and oil drilling belong to:", options:["Tertiary sector","Secondary sector","Primary sector","Automotive sector"], answer:"Primary sector"},
+  {q:"A furniture maker, a steel factory and a textile manufacturer belong to:", options:["Primary sector","Secondary sector","Tertiary sector","Service sector"], answer:"Secondary sector"},
+  {q:"The term 'service sector' refers to the same sector as:", options:["Primary sector","Secondary sector","Tertiary sector","Manufacturing sector"], answer:"Tertiary sector"}
+]);
+
+initFill('u9f2',
+  ['shared','heard','decided','flew','found'],
+  [
+    {text:'Joe and Brian ___ an apartment together in San Francisco in 2007.', answer:'shared'},
+    {text:'When they ___ a design conference was coming to the city, the hotels were fully booked.', answer:'heard'},
+    {text:'They ___ to offer their flat as cheap accommodation to the conference participants.', answer:'decided'},
+    {text:'They ___ to New York because that was where most of their customers were.', answer:'flew'},
+    {text:'They soon ___ three paying guests who slept on airbeds in their living room.', answer:'found'}
+  ]
+);
+
+initMCQ('u9q2', [
+  {q:"She ___ IT when she started her first business. (background ongoing action)", options:["was studying","studied","is studying","has studied"], answer:"was studying"},
+  {q:"He told me he wanted to quit his job while we ___ lunch. (simultaneous action)", options:["had","have","were having","are having"], answer:"were having"},
+  {q:"While I ___ the slides, the electricity suddenly went out. (interrupted action)", options:["presented","was presenting","am presenting","have presented"], answer:"was presenting"},
+  {q:"We got tired so we ___ to have a break. (completed, single decision)", options:["are deciding","were deciding","decided","have decided"], answer:"decided"},
+  {q:"When I ___ to the office, everyone was already working. (completed arrival)", options:["got","was getting","am getting","have gotten"], answer:"got"}
+]);
+
+initMatch('u9m2', [
+  {left:'Sorry to interrupt.', right:'asking permission to interrupt'},
+  {left:'Please go ahead.', right:'accepting an interruption'},
+  {left:'Can I just finish my point?', right:'preventing an interruption'},
+  {left:'So, as I was saying...', right:'going back to an earlier point'},
+  {left:'Excuse me for interrupting.', right:'apologising before making an interruption'},
+  {left:'What did you want to say?', right:'inviting someone else to speak'}
+]);
+
+initMCQ('u9q3', [
+  {q:"When leaving a voicemail, what should you do first?", options:["Give the reason for your call","Identify yourself","Provide your phone number","Say goodbye"], answer:"Identify yourself"},
+  {q:"Which phrase is best for ending a voicemail message?", options:["I'm calling about the meeting.","This is Tom from ABC company.","I look forward to hearing from you.","My number is 0800 123 456."], answer:"I look forward to hearing from you."},
+  {q:"'Could you call me back on my mobile?' This phrase is used to:", options:["Identify yourself","State the reason for the call","Offer an alternative contact method","Provide a deadline"], answer:"Offer an alternative contact method"},
+  {q:"'Could you get back to me by Monday?' This phrase is used to:", options:["Give your contact details","Provide a deadline","Close the message","State the reason for the call"], answer:"Provide a deadline"}
+]);
+
+</script>
+</body>
+</html>

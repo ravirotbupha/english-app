@@ -2586,6 +2586,40 @@ initMCQ('u9q3', [
   {q:"'Could you get back to me by Monday?' This phrase is used to:", options:["Give your contact details","Provide a deadline","Close the message","State the reason for the call"], answer:"Provide a deadline"}
 ]);
 
+
+// ======================================================
+// ADMIN CSV EXPORT
+// ======================================================
+function exportCSV() {
+  var pwd = prompt('Enter admin password:');
+  if (pwd !== '7428') { alert('Incorrect password.'); return; }
+
+  db.collection('students').get()
+    .then(function(snapshot) {
+      if (snapshot.empty) { alert('No student records found.'); return; }
+      var rows = [['Name', 'Student ID', 'Email', 'Exercises Completed', 'Total Exercises', 'Progress %', 'Last Updated']];
+      snapshot.forEach(function(doc) {
+        var d = doc.data();
+        var ts = d.lastUpdated ? d.lastUpdated.toDate().toLocaleString() : '';
+        rows.push([d.name, d.studentId, d.email, d.exercisesCompleted, d.totalExercises, d.progressPct, ts]);
+      });
+      var csv = rows.map(function(r) {
+        return r.map(function(v) { return '"' + String(v == null ? '' : v).replace(/"/g, '""') + '"'; }).join(',');
+      }).join('\n');
+      var blob = new Blob(['\uFEFF' + csv, ''], { type: 'text/csv;charset=utf-8;' });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url; a.download = 'student_progress.csv'; a.click();
+      URL.revokeObjectURL(url);
+    })
+    .catch(function(err) { alert('Export failed: ' + err.message); });
+}
+
 </script>
+
+<div style="text-align:center; padding: 24px 0 16px; opacity:0.4; font-size:0.78rem;">
+  <button onclick="exportCSV()" style="background:none;border:none;color:#64748b;cursor:pointer;font-size:0.78rem;">Admin Export</button>
+</div>
+
 </body>
 </html>

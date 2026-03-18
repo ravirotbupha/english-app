@@ -1492,6 +1492,17 @@ function renderMCQ(id) {
     }
     container.appendChild(div);
   });
+  // Show score when all questions answered
+  if (Object.keys(d.answered).length === d.questions.length) {
+    var correct = 0;
+    d.questions.forEach(function(q, qi) {
+      if (d.answered[qi] === q.answer) correct++;
+    });
+    var sc = document.createElement('div');
+    sc.className = 'score-display';
+    sc.textContent = 'Score: ' + correct + ' / ' + d.questions.length;
+    container.appendChild(sc);
+  }
 }
 
 function resetMCQ(id) {

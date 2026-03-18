@@ -1325,7 +1325,8 @@ function saveExAnswers() {
 var fillData = {};
 
 function initFill(id, words, sentences) {
-  fillData[id] = { words: words, sentences: sentences, filled: {}, selected: null };
+  var uniqueWords = words.filter(function(w, i, self) { return self.indexOf(w) === i; });
+  fillData[id] = { words: words, sentences: sentences, filled: {}, selected: null, shuffledWords: shuffle(uniqueWords) };
   if (savedExAnswers.fill && savedExAnswers.fill[id]) {
     fillData[id].filled = savedExAnswers.fill[id];
   }
@@ -1366,10 +1367,9 @@ function renderFill(id) {
   var usedCount = {};
   Object.values(d.filled).forEach(function(v) { usedCount[v] = (usedCount[v] || 0) + 1; });
 
-  // Build word box (shuffled unique words, show used state)
+  // Build word box (stable order, shuffled once on init)
   wb.innerHTML = '';
-  var shuffled = shuffle(d.words.filter(function(w, i, self) { return self.indexOf(w) === i; }));
-  shuffled.forEach(function(word) {
+  d.shuffledWords.forEach(function(word) {
     var avail = (needed[word] || 0) - (usedCount[word] || 0);
     var chip = document.createElement('span');
     chip.className = 'word-chip' + (avail <= 0 ? ' used' : '') + (d.selected === word ? ' selected' : '');

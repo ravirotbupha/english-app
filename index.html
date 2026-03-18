@@ -527,7 +527,24 @@
     .text-input { font-size: 16px; }
     /* Keep 2-column match/mcq layout on tablets — screen is wide enough */
   }
+
+  /* ── Firebase Save Button ─────────────────────────────── */
+  .btn-save-progress {
+    background: #16a34a; color: #fff; border: none;
+    padding: 8px 20px; border-radius: 8px; cursor: pointer;
+    font-size: 0.9rem; font-weight: 600; margin-top: 18px;
+    transition: background 0.2s;
+  }
+  .btn-save-progress:hover { background: #15803d; }
+  .save-status { font-size: 0.8rem; margin-top: 5px; min-height: 16px; font-weight: 500; }
+  .save-status.ok  { color: #4ade80; }
+  .save-status.err { color: #fca5a5; }
+  .save-status.pending { color: #94a3b8; }
 </style>
+
+<!-- Firebase SDKs (compat / CDN — no build tool needed) -->
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
 </head>
 <body>
 
@@ -546,6 +563,10 @@
     <div>
       <label for="studentEmail">Email Address</label>
       <input type="email" id="studentEmail" placeholder="Enter your email" autocomplete="email" inputmode="email" oninput="localStorage.setItem('bp_studentEmail', this.value)" />
+    </div>
+    <div>
+      <button class="btn-save-progress" onclick="saveToFirestore()">&#128190; Save Progress</button>
+      <div id="save-status" class="save-status"></div>
     </div>
   </div>
 </header>
@@ -1249,6 +1270,66 @@
 
 <script>
 // ======================================================
+// FIREBASE + FIRESTORE
+// ======================================================
+var firebaseConfig = {
+  apiKey: "AIzaSyB95Jt5-FIuyavOXK5A9QA8l-EAL6koxWk",
+  authDomain: "english-app-f31de.firebaseapp.com",
+  projectId: "english-app-f31de",
+  storageBucket: "english-app-f31de.firebasestorage.app",
+  messagingSenderId: "986813540060",
+  appId: "1:986813540060:web:eb80fde0a26a4df5277619",
+  measurementId: "G-D6D4S1LRE4"
+};
+firebase.initializeApp(firebaseConfig);
+var db = firebase.firestore();
+
+function saveToFirestore(auto) {
+  var name  = document.getElementById('studentName').value.trim();
+  var sid   = document.getElementById('studentId').value.trim();
+  var email = document.getElementById('studentEmail').value.trim();
+
+  if (!name && !sid && !email) {
+    if (!auto) showSaveStatus('Please enter your name, ID, or email first.', false);
+    return;
+  }
+
+  var completed = Object.keys(completedExercises).length;
+  var pct = Math.round(completed / TOTAL_EXERCISES * 100);
+  var docId = sid || email.replace(/[^a-zA-Z0-9]/g, '_') || ('anon_' + Date.now());
+
+  var data = {
+    name:               name  || '(not provided)',
+    studentId:          sid   || '(not provided)',
+    email:              email || '(not provided)',
+    exercisesCompleted: completed,
+    totalExercises:     TOTAL_EXERCISES,
+    progressPct:        pct,
+    lastUpdated:        firebase.firestore.FieldValue.serverTimestamp()
+  };
+
+  if (!auto) showSaveStatus('Saving\u2026', null);
+
+  db.collection('students').doc(docId).set(data, { merge: true })
+    .then(function() {
+      if (!auto) showSaveStatus('\u2713 Progress saved!', true);
+    })
+    .catch(function(err) {
+      if (!auto) showSaveStatus('Error: ' + err.message, false);
+    });
+}
+
+function showSaveStatus(msg, ok) {
+  var el = document.getElementById('save-status');
+  if (!el) return;
+  el.textContent = msg;
+  el.className = 'save-status ' + (ok === true ? 'ok' : ok === false ? 'err' : 'pending');
+  if (ok !== null) {
+    setTimeout(function() { el.textContent = ''; el.className = 'save-status'; }, 3000);
+  }
+}
+
+// ======================================================
 // NAVIGATION
 // ======================================================
 var navBtns = document.querySelectorAll('.nav-btn');
@@ -1854,6 +1935,7 @@ function showQuizResult() {
   document.getElementById('result-score').textContent = quizScore;
   document.getElementById('result-msg').textContent = msg;
   markExerciseDone('quiz');
+  saveToFirestore(true); // auto-save to Firestore when quiz finishes
 }
 
 function restartQuiz() {

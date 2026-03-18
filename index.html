@@ -1582,6 +1582,7 @@ function renderMCQ(id) {
     });
     var sc = document.createElement('div');
     sc.className = 'score-display';
+    sc.style.display = 'block';
     sc.textContent = 'Score: ' + correct + ' / ' + d.questions.length;
     container.appendChild(sc);
   }

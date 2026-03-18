@@ -1527,7 +1527,7 @@ function initMatch(id, pairs) {
   // Restore score display if all pairs were already matched
   var d = matchData[id];
   if (Object.keys(d.matched).length === d.pairs.length) {
-    var correctCount = Object.values(d.matched).filter(Boolean).length;
+    var correctCount = Object.values(d.matched).filter(function(m) { return m.correct; }).length;
     var sc = document.getElementById('sc-' + id);
     if (sc) { sc.textContent = 'Score: ' + correctCount + ' / ' + d.pairs.length; sc.style.display = 'block'; }
     markExerciseDone(id);
@@ -1549,7 +1549,7 @@ function renderMatch(id) {
     li.className = 'match-item';
     li.textContent = p.left;
     if (d.matched[i] !== undefined) {
-      li.classList.add(d.matched[i] ? 'matched-correct' : 'matched-incorrect');
+      li.classList.add(d.matched[i].correct ? 'matched-correct' : 'matched-incorrect');
     } else if (d.selL === i) {
       li.classList.add('selected');
     }
@@ -1565,13 +1565,13 @@ function renderMatch(id) {
   d.rights.forEach(function(r, ri) {
     var isMatchedKey = null;
     Object.keys(d.matched).forEach(function(k) {
-      if (d.pairs[parseInt(k)].right === r) isMatchedKey = parseInt(k);
+      if (d.matched[parseInt(k)].ri === ri) isMatchedKey = parseInt(k);
     });
     var item = document.createElement('div');
     item.className = 'match-item';
     item.textContent = r;
     if (isMatchedKey !== null) {
-      item.classList.add(d.matched[isMatchedKey] ? 'matched-correct' : 'matched-incorrect');
+      item.classList.add(d.matched[isMatchedKey].correct ? 'matched-correct' : 'matched-incorrect');
     } else if (d.selR === ri) {
       item.classList.add('selected');
     }
@@ -1591,13 +1591,13 @@ function checkPair(id) {
   var ri = d.selR;
   if (li === null || ri === null) return;
   var correct = d.pairs[li].right === d.rights[ri];
-  d.matched[li] = correct;
+  d.matched[li] = { ri: ri, correct: correct };
   d.selL = null;
   d.selR = null;
   renderMatch(id);
   saveExAnswers();
   if (Object.keys(d.matched).length === d.pairs.length) {
-    var correctCount = Object.values(d.matched).filter(Boolean).length;
+    var correctCount = Object.values(d.matched).filter(function(m) { return m.correct; }).length;
     var sc = document.getElementById('sc-' + id);
     sc.textContent = 'Score: ' + correctCount + ' / ' + d.pairs.length;
     sc.style.display = 'block';

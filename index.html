@@ -1440,6 +1440,7 @@ function resetFill(id) {
 var mcqData = {};
 
 function initMCQ(id, questions) {
+  questions.forEach(function(q) { q.options = shuffle(q.options); });
   mcqData[id] = { questions: questions, answered: {} };
   if (savedExAnswers.mcq && savedExAnswers.mcq[id]) {
     mcqData[id].answered = savedExAnswers.mcq[id];

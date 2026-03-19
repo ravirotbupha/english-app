@@ -39,6 +39,8 @@
   }
   .student-info input::placeholder { color: rgba(255,255,255,0.55); }
   .student-info input:focus { background: rgba(255,255,255,0.25); border-color: rgba(255,255,255,0.8); }
+  .student-info input[readonly] { opacity: 0.75; cursor: not-allowed; border-color: rgba(255,255,255,0.25); }
+  .student-info input[readonly]:focus { background: rgba(255,255,255,0.15); border-color: rgba(255,255,255,0.25); }
 
   .main-nav {
     background: #fff;
@@ -553,16 +555,16 @@
   <p>Created by Bupha Ravirot &middot; Reference: Business Partner A2+</p>
   <div class="student-info">
     <div>
-      <label for="studentName">Student Name</label>
-      <input type="text" id="studentName" placeholder="Enter your name" autocomplete="name" autocapitalize="words" oninput="localStorage.setItem('bp_studentName', this.value)" />
+      <label for="studentName">Student Name ภาษาไทย</label>
+      <input type="text" id="studentName" placeholder="Enter your name" autocomplete="name" autocapitalize="words" oninput="localStorage.setItem('bp_studentName', this.value);" onblur="lockFieldIfFilled(this, 'bp_studentName');" />
     </div>
     <div>
       <label for="studentId">Student ID</label>
-      <input type="text" id="studentId" placeholder="Enter your ID" autocomplete="off" inputmode="text" oninput="localStorage.setItem('bp_studentId', this.value)" />
+      <input type="text" id="studentId" placeholder="Enter your ID" autocomplete="off" inputmode="text" oninput="localStorage.setItem('bp_studentId', this.value);" onblur="lockFieldIfFilled(this, 'bp_studentId');" />
     </div>
     <div>
       <label for="studentEmail">Email Address</label>
-      <input type="email" id="studentEmail" placeholder="Enter your email" autocomplete="email" inputmode="email" oninput="localStorage.setItem('bp_studentEmail', this.value)" />
+      <input type="email" id="studentEmail" placeholder="Enter your email" autocomplete="email" inputmode="email" oninput="localStorage.setItem('bp_studentEmail', this.value);" onblur="lockFieldIfFilled(this, 'bp_studentEmail');" />
     </div>
     <div>
       <button class="btn-save-progress" onclick="saveToFirestore()">&#128190; Save Progress</button>
@@ -1283,6 +1285,12 @@ var firebaseConfig = {
 };
 firebase.initializeApp(firebaseConfig);
 var db = firebase.firestore();
+
+function lockFieldIfFilled(el, storageKey) {
+  if (el.value.trim()) {
+    el.setAttribute('readonly', 'readonly');
+  }
+}
 
 function saveToFirestore(auto) {
   var name  = document.getElementById('studentName').value.trim();
@@ -2017,9 +2025,12 @@ function restoreQuizState() {
   var name = localStorage.getItem('bp_studentName');
   var id = localStorage.getItem('bp_studentId');
   var email = localStorage.getItem('bp_studentEmail');
-  if (name) document.getElementById('studentName').value = name;
-  if (id) document.getElementById('studentId').value = id;
-  if (email) document.getElementById('studentEmail').value = email;
+  var nameEl  = document.getElementById('studentName');
+  var idEl    = document.getElementById('studentId');
+  var emailEl = document.getElementById('studentEmail');
+  if (name)  { nameEl.value  = name;  nameEl.setAttribute('readonly', 'readonly'); }
+  if (id)    { idEl.value    = id;    idEl.setAttribute('readonly', 'readonly'); }
+  if (email) { emailEl.value = email; emailEl.setAttribute('readonly', 'readonly'); }
 
   var saved = localStorage.getItem('bp_quizState');
   if (!saved) return;

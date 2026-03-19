@@ -1308,16 +1308,17 @@ function saveToFirestore(auto) {
   var sec = getSectionScores();
 
   var data = {
-    name:               name  || '(not provided)',
-    studentId:          sid   || '(not provided)',
-    email:              email || '(not provided)',
-    exercisesCompleted: completed,
-    totalExercises:     TOTAL_EXERCISES,
-    progressPct:        pct,
-    vocabScore:         sec.vocab.pct,
-    grammarScore:       sec.grammar.pct,
-    commScore:          sec.comm.pct,
-    lastUpdated:        firebase.firestore.FieldValue.serverTimestamp()
+    name:                  name  || '(not provided)',
+    studentId:             sid   || '(not provided)',
+    email:                 email || '(not provided)',
+    exercisesCompleted:    completed,
+    totalExercises:        TOTAL_EXERCISES,
+    progressPct:           pct,
+    vocabScore:            sec.vocab.pct,
+    grammarScore:          sec.grammar.pct,
+    commScore:             sec.comm.pct,
+    completedExerciseIds:  completedExercises,
+    lastUpdated:           firebase.firestore.FieldValue.serverTimestamp()
   };
 
   if (!auto) showSaveStatus('Saving\u2026', null);
@@ -1329,6 +1330,24 @@ function saveToFirestore(auto) {
     .catch(function(err) {
       if (!auto) showSaveStatus('Error: ' + err.message, false);
     });
+}
+
+function syncFromFirestore() {
+  var sid   = localStorage.getItem('bp_studentId');
+  var email = localStorage.getItem('bp_studentEmail');
+  if (!sid && !email) return;
+  var docId = sid || email.replace(/[^a-zA-Z0-9]/g, '_');
+  db.collection('students').doc(docId).get()
+    .then(function(doc) {
+      if (!doc.exists) return;
+      var remote = doc.data().completedExerciseIds;
+      if (remote && typeof remote === 'object') {
+        Object.keys(remote).forEach(function(id) { completedExercises[id] = true; });
+        saveProgress();
+        updateProgressBar();
+      }
+    })
+    .catch(function(err) { console.log('Sync error:', err); });
 }
 
 function showSaveStatus(msg, ok) {
@@ -2094,6 +2113,7 @@ function restoreQuizState() {
 loadExAnswers();
 restoreQuizState();
 restoreProgress();
+syncFromFirestore();
 
 // ======================================================
 // DATA INITIALIZATION

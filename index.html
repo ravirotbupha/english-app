@@ -1305,6 +1305,7 @@ function saveToFirestore(auto) {
   var completed = Object.keys(completedExercises).length;
   var pct = Math.round(completed / TOTAL_EXERCISES * 100);
   var docId = sid || email.replace(/[^a-zA-Z0-9]/g, '_') || ('anon_' + Date.now());
+  var sec = getSectionScores();
 
   var data = {
     name:               name  || '(not provided)',
@@ -1313,6 +1314,9 @@ function saveToFirestore(auto) {
     exercisesCompleted: completed,
     totalExercises:     TOTAL_EXERCISES,
     progressPct:        pct,
+    vocabScore:         sec.vocab.pct,
+    grammarScore:       sec.grammar.pct,
+    commScore:          sec.comm.pct,
     lastUpdated:        firebase.firestore.FieldValue.serverTimestamp()
   };
 
@@ -1992,6 +1996,22 @@ function restoreAnsweredQ(chosen, correct) {
 var TOTAL_EXERCISES = 62;
 var completedExercises = {};
 
+var SECTION_MAP = {
+  vocab: ['u0m1','u0f1','u0q1','u1f1','u1q1','u2q1','u2m1','u3q1','u3f1','u4q1','u4f1','u5q1','u5m1','u6q1','u6m1','u7q1','u7m1','u8m1','u8f1','u8q1','u9m1','u9f1','u9q1'],
+  grammar: ['u0q2','u0t1','u1q2','u1f2','u2f1','u2q2','u3t1','u3q2','u4q2','u4f2','u5q2','u5f1','u6q2','u6f1','u7q2','u7f1','u8f2','u8q2','u9f2','u9q2'],
+  comm: ['u0m2','u0q3','u1m1','u1q3','u2m2','u3q3','u3m1','u4q3','u5q3','u5m2','u6q3','u6m2','u7q3','u7m2','u8m2','u8q3','u9m2','u9q3']
+};
+
+function getSectionScores() {
+  var scores = {};
+  ['vocab','grammar','comm'].forEach(function(sec) {
+    var ids = SECTION_MAP[sec];
+    var done = ids.filter(function(id) { return completedExercises[id]; }).length;
+    scores[sec] = { done: done, total: ids.length, pct: Math.round(done / ids.length * 100) };
+  });
+  return scores;
+}
+
 function markExerciseDone(id) {
   if (!completedExercises[id]) {
     completedExercises[id] = true;
@@ -2609,11 +2629,11 @@ function exportCSV() {
   db.collection('students').get()
     .then(function(snapshot) {
       if (snapshot.empty) { alert('No student records found.'); return; }
-      var rows = [['Name', 'Student ID', 'Email', 'Exercises Completed', 'Total Exercises', 'Progress %', 'Last Updated']];
+      var rows = [['Name', 'Student ID', 'Email', 'Exercises Completed', 'Total Exercises', 'Progress %', 'Vocabulary Score %', 'Grammar Score %', 'Communication & Skills Score %', 'Last Updated']];
       snapshot.forEach(function(doc) {
         var d = doc.data();
         var ts = d.lastUpdated ? d.lastUpdated.toDate().toLocaleString() : '';
-        rows.push([d.name, d.studentId, d.email, d.exercisesCompleted, d.totalExercises, d.progressPct, ts]);
+        rows.push([d.name, d.studentId, d.email, d.exercisesCompleted, d.totalExercises, d.progressPct, d.vocabScore != null ? d.vocabScore : '', d.grammarScore != null ? d.grammarScore : '', d.commScore != null ? d.commScore : '', ts]);
       });
       var csv = rows.map(function(r) {
         return r.map(function(v) { return '"' + String(v == null ? '' : v).replace(/"/g, '""') + '"'; }).join(',');

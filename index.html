@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -554,23 +555,23 @@
   <h1>Business English Quizes (A2+)</h1>
   <p>Created by Bupha Ravirot &middot; Reference: Business Partner A2+</p>
   <div class="student-info">
-    <div>
-      <label for="studentName">Student Name ภาษาไทย</label>
-      <input type="text" id="studentName" placeholder="Enter your name" autocomplete="name" autocapitalize="words" oninput="localStorage.setItem('bp_studentName', this.value);" onblur="lockFieldIfFilled(this, 'bp_studentName');" />
-    </div>
-    <div>
-      <label for="studentId">Student ID</label>
-      <input type="text" id="studentId" placeholder="Enter your ID" autocomplete="off" inputmode="text" oninput="localStorage.setItem('bp_studentId', this.value);" onblur="lockFieldIfFilled(this, 'bp_studentId');" />
-    </div>
-    <div>
-      <label for="studentEmail">Email Address</label>
-      <input type="email" id="studentEmail" placeholder="Enter your email" autocomplete="email" inputmode="email" oninput="localStorage.setItem('bp_studentEmail', this.value);" onblur="lockFieldIfFilled(this, 'bp_studentEmail');" />
-    </div>
-    <div>
-      <button class="btn-save-progress" onclick="saveToFirestore()">&#128190; Save Progress</button>
-      <div id="save-status" class="save-status"></div>
-    </div>
+  <div>
+    <label for="studentName">Student Name ภาษาไทย</label>
+    <input type="text" id="studentName" placeholder="Enter your name" oninput="localStorage.setItem('bp_studentName', this.value);" />
   </div>
+  <div>
+    <label for="studentId">Student ID (จำเป็น)</label>
+    <input type="text" id="studentId" placeholder="กรอกรหัสนักศึกษา" oninput="localStorage.setItem('bp_studentId', this.value);" onblur="syncFromFirestore();" />
+  </div>
+  <div>
+    <label for="studentEmail">Email Address</label>
+    <input type="email" id="studentEmail" placeholder="Enter your email" oninput="localStorage.setItem('bp_studentEmail', this.value);" />
+  </div>
+  <div>
+    <button class="btn-save-progress" onclick="saveToFirestore()">&#128190; Save Progress</button>
+    <div id="save-status" class="save-status"></div>
+  </div>
+</div>
 </header>
 
 <nav class="main-nav">
@@ -1289,27 +1290,36 @@ var db = firebase.firestore();
 function lockFieldIfFilled(el, storageKey) {
   if (el.value.trim()) {
     el.setAttribute('readonly', 'readonly');
+	if (storageKey === 'bp_studentId') {
+      syncFromFirestore(); 
+    }
   }
 }
 
 function saveToFirestore(auto) {
-  var name  = document.getElementById('studentName').value.trim();
   var sid   = document.getElementById('studentId').value.trim();
+  var name  = document.getElementById('studentName').value.trim();
   var email = document.getElementById('studentEmail').value.trim();
 
-  if (!name && !sid && !email) {
-    if (!auto) showSaveStatus('Please enter your name, ID, or email first.', false);
+  if (!sid) {
+    if (!auto) alert('กรุณากรอก Student ID ก่อนบันทึกความคืบหน้าครับ');
     return;
+  }
+
+  // ดักคนชุ่ย: ถ้ายังไม่เคยล็อคช่อง ให้ถามยืนยันรหัสก่อนเซฟครั้งแรก
+  var idField = document.getElementById('studentId');
+  if (!idField.hasAttribute('readonly') && !auto) {
+    var conf = confirm('โปรดยืนยันรหัสนักศึกษาของคุณ:\n\n' + sid + '\n\nตรวจสอบให้มั่นใจว่า "พิมพ์ถูกทุกตัว" หากรหัสผิดคะแนนจะไม่เป็นชื่อคุณ และจะไม่สามารถกลับมาแก้ไขได้อีก!');
+    if (!conf) return; 
   }
 
   var completed = Object.keys(completedExercises).length;
   var pct = Math.round(completed / TOTAL_EXERCISES * 100);
-  var docId = sid || email.replace(/[^a-zA-Z0-9]/g, '_') || ('anon_' + Date.now());
   var sec = getSectionScores();
 
   var data = {
     name:                  name  || '(not provided)',
-    studentId:             sid   || '(not provided)',
+    studentId:             sid,
     email:                 email || '(not provided)',
     exercisesCompleted:    completed,
     totalExercises:        TOTAL_EXERCISES,
@@ -1318,34 +1328,53 @@ function saveToFirestore(auto) {
     grammarScore:          sec.grammar.pct,
     commScore:             sec.comm.pct,
     completedExerciseIds:  completedExercises,
+    savedAnswers:          savedExAnswers,
     lastUpdated:           firebase.firestore.FieldValue.serverTimestamp()
   };
 
   if (!auto) showSaveStatus('Saving\u2026', null);
 
-  db.collection('students').doc(docId).set(data, { merge: true })
+  db.collection('students').doc(sid).set(data, { merge: true })
     .then(function() {
-      if (!auto) showSaveStatus('\u2713 Progress saved!', true);
+      if (!auto) {
+        showSaveStatus('\u2713 Progress saved!', true);
+        lockAllFields(); // เซฟสำเร็จแล้วค่อยสั่งล็อคทุกช่อง
+      }
     })
     .catch(function(err) {
       if (!auto) showSaveStatus('Error: ' + err.message, false);
     });
 }
 
+function lockAllFields() {
+  document.getElementById('studentName').setAttribute('readonly', 'readonly');
+  document.getElementById('studentId').setAttribute('readonly', 'readonly');
+  document.getElementById('studentEmail').setAttribute('readonly', 'readonly');
+}
+
 function syncFromFirestore() {
-  var sid   = localStorage.getItem('bp_studentId');
-  var email = localStorage.getItem('bp_studentEmail');
-  if (!sid && !email) return;
-  var docId = sid || email.replace(/[^a-zA-Z0-9]/g, '_');
-  db.collection('students').doc(docId).get()
+  var sid = document.getElementById('studentId').value.trim() || localStorage.getItem('bp_studentId');
+  if (!sid) return;
+
+  db.collection('students').doc(sid).get()
     .then(function(doc) {
       if (!doc.exists) return;
-      var remote = doc.data().completedExerciseIds;
-      if (remote && typeof remote === 'object') {
-        Object.keys(remote).forEach(function(id) { completedExercises[id] = true; });
-        saveProgress();
-        updateProgressBar();
+      var d = doc.data();
+
+      if (d.completedExerciseIds) {
+        completedExercises = d.completedExerciseIds;
+        localStorage.setItem('bp_progress', JSON.stringify(completedExercises));
       }
+
+      if (d.savedAnswers) {
+        savedExAnswers = d.savedAnswers;
+        localStorage.setItem('bp_answers', JSON.stringify(savedExAnswers));
+      }
+	  
+      updateProgressBar();
+      initAllData();
+      
+      console.log('Sync complete: UI Updated for ID ' + sid);
     })
     .catch(function(err) { console.log('Sync error:', err); });
 }
@@ -2067,9 +2096,9 @@ function restoreQuizState() {
   var nameEl  = document.getElementById('studentName');
   var idEl    = document.getElementById('studentId');
   var emailEl = document.getElementById('studentEmail');
-  if (name)  { nameEl.value  = name;  nameEl.setAttribute('readonly', 'readonly'); }
-  if (id)    { idEl.value    = id;    idEl.setAttribute('readonly', 'readonly'); }
-  if (email) { emailEl.value = email; emailEl.setAttribute('readonly', 'readonly'); }
+  if (name)  { nameEl.value  = name;  }
+  if (id)    { idEl.value    = id;    }
+  if (email) { emailEl.value = email; }
 
   var saved = localStorage.getItem('bp_quizState');
   if (!saved) return;
@@ -2113,530 +2142,535 @@ function restoreQuizState() {
 loadExAnswers();
 restoreQuizState();
 restoreProgress();
+initAllData();
 syncFromFirestore();
 
 // ======================================================
 // DATA INITIALIZATION
 // ======================================================
 
-// --- UNIT 1 ---
-initMatch('u0m1', [
-  {left:'boat', right:'travels on water'},
-  {left:'coach', right:'comfortable long-distance bus'},
-  {left:'lounge', right:'waiting area at an airport'},
-  {left:'B&B', right:'budget accommodation with breakfast included'},
-  {left:'luxury hotel', right:'most expensive and comfortable accommodation'},
-  {left:'youth hostel', right:'cheapest option, usually shared rooms'}
-]);
+function initAllData() {
+  loadExAnswers();
 
-initFill('u0f1',
-  ['long-haul','take-off','departure','delayed','local'],
-  [
-    {text:'A short trip is short-haul; a very long trip is ___.', answer:'long-haul'},
-    {text:'Landing is the opposite of ___.', answer:'take-off'},
-    {text:'Arrival is the opposite of ___.', answer:'departure'},
-    {text:'On-time is the opposite of ___.', answer:'delayed'},
-    {text:'Abroad is the opposite of ___.', answer:'local'}
-  ]
-);
+  // --- UNIT 1 ---
+  initMatch('u0m1', [
+    {left:'boat', right:'travels on water'},
+    {left:'coach', right:'comfortable long-distance bus'},
+    {left:'lounge', right:'waiting area at an airport'},
+    {left:'B&B', right:'budget accommodation with breakfast included'},
+    {left:'luxury hotel', right:'most expensive and comfortable accommodation'},
+    {left:'youth hostel', right:'cheapest option, usually shared rooms'}
+  ]);
 
-initMCQ('u0q1', [
-  {q:"A hotel with a spa, fine dining, and a concierge service is a:", options:["luxury hotel","budget hotel","youth hostel","B&B"], answer:"luxury hotel"},
-  {q:"A rented apartment is useful because:", options:["it feels like home and often has a kitchen","it is always the cheapest option","it always includes breakfast","it is available in every city"], answer:"it feels like home and often has a kitchen"},
-  {q:"Which accommodation type is usually the cheapest?", options:["youth hostel","business hotel","holiday resort","rented apartment"], answer:"youth hostel"}
-]);
+  initFill('u0f1',
+    ['long-haul','take-off','departure','delayed','local'],
+    [
+      {text:'A short trip is short-haul; a very long trip is ___.', answer:'long-haul'},
+      {text:'Landing is the opposite of ___.', answer:'take-off'},
+      {text:'Arrival is the opposite of ___.', answer:'departure'},
+      {text:'On-time is the opposite of ___.', answer:'delayed'},
+      {text:'Abroad is the opposite of ___.', answer:'local'}
+    ]
+  );
 
-initMCQ('u0q2', [
-  {q:"Planes are ___ trains. (fast)", options:["faster than","more fast than","the fastest","as fast as"], answer:"faster than"},
-  {q:"Business class is ___ economy class. (expensive)", options:["more expensive than","expensiver than","the most expensive","expensive than"], answer:"more expensive than"},
-  {q:"Taxis are ___ buses for short journeys. (convenient)", options:["more convenient than","convenienter than","the most convenient","convenient as"], answer:"more convenient than"},
-  {q:"The coach is ___ way to travel between cities. (cheap)", options:["the cheapest","cheaper","most cheap","the most cheap"], answer:"the cheapest"}
-]);
+  initMCQ('u0q1', [
+    {q:"A hotel with a spa, fine dining, and a concierge service is a:", options:["luxury hotel","budget hotel","youth hostel","B&B"], answer:"luxury hotel"},
+    {q:"A rented apartment is useful because:", options:["it feels like home and often has a kitchen","it is always the cheapest option","it always includes breakfast","it is available in every city"], answer:"it feels like home and often has a kitchen"},
+    {q:"Which accommodation type is usually the cheapest?", options:["youth hostel","business hotel","holiday resort","rented apartment"], answer:"youth hostel"}
+  ]);
 
-initTI('u0t1', [
-  {prompt:"Flying is ___ (good) way to travel long distances.", answer:"the best"},
-  {prompt:"This is ___ (bad) hotel I have ever stayed in.", answer:"the worst"},
-  {prompt:"Tokyo is ___ (big) city I have visited.", answer:"the biggest"},
-  {prompt:"The train is ___ (expensive) option available here.", answer:"the most expensive"}
-]);
+  initMCQ('u0q2', [
+    {q:"Planes are ___ trains. (fast)", options:["faster than","more fast than","the fastest","as fast as"], answer:"faster than"},
+    {q:"Business class is ___ economy class. (expensive)", options:["more expensive than","expensiver than","the most expensive","expensive than"], answer:"more expensive than"},
+    {q:"Taxis are ___ buses for short journeys. (convenient)", options:["more convenient than","convenienter than","the most convenient","convenient as"], answer:"more convenient than"},
+    {q:"The coach is ___ way to travel between cities. (cheap)", options:["the cheapest","cheaper","most cheap","the most cheap"], answer:"the cheapest"}
+  ]);
 
-initMatch('u0m2', [
-  {left:"Where do you come from?", right:"I'm from Turkey."},
-  {left:"How long was your trip?", right:"About an hour."},
-  {left:"What do you think of this city?", right:"It's very nice."},
-  {left:"Do you know Prague?", right:"A little. I went there on holiday."},
-  {left:"What are you doing in Dublin?", right:"I'm starting a new job."}
-]);
+  initTI('u0t1', [
+    {prompt:"Flying is ___ (good) way to travel long distances.", answer:"the best"},
+    {prompt:"This is ___ (bad) hotel I have ever stayed in.", answer:"the worst"},
+    {prompt:"Tokyo is ___ (big) city I have visited.", answer:"the biggest"},
+    {prompt:"The train is ___ (expensive) option available here.", answer:"the most expensive"}
+  ]);
 
-initMCQ('u0q3', [
-  {q:"Your colleague cannot connect to the internet. They say:", options:["I can't connect to the Wi-Fi.","I look forward to hearing from you.","Could you repeat that?","Let's get started."], answer:"I can't connect to the Wi-Fi."},
-  {q:"You want to help set up a colleague's email. You say:", options:["I'll set that up for you.","I'm having trouble logging on.","Could you tell me?","Try logging on again."], answer:"I'll set that up for you."},
-  {q:"The connection problem may be temporary. You say:", options:["Try logging on again.","I'm having problems with this.","You need to use the app.","I don't know how to set up email."], answer:"Try logging on again."}
-]);
+  initMatch('u0m2', [
+    {left:"Where do you come from?", right:"I'm from Turkey."},
+    {left:"How long was your trip?", right:"About an hour."},
+    {left:"What do you think of this city?", right:"It's very nice."},
+    {left:"Do you know Prague?", right:"A little. I went there on holiday."},
+    {left:"What are you doing in Dublin?", right:"I'm starting a new job."}
+  ]);
 
-// --- UNIT 2 ---
-initFill('u1f1',
-  ['motorway','headquarters','warehouse','lab','studio','rent','factory','access'],
-  [
-    {text:'The company\'s ___ is in London where all major decisions are made.', answer:'headquarters'},
-    {text:'Scientists test experiments in a ___.', answer:'lab'},
-    {text:'We store all our products in a large ___ outside the city.', answer:'warehouse'},
-    {text:'Designers work in a ___ with good natural light.', answer:'studio'},
-    {text:'The ___ connects the two cities, and you can travel at 120 km/h.', answer:'motorway'},
-    {text:'___ to the office is excellent — there is a train every 10 minutes.', answer:'access'},
-    {text:'The ___ produces 500 cars per day using automated machines.', answer:'factory'},
-    {text:'Office ___ in the city centre is very expensive per square metre.', answer:'rent'}
-  ]
-);
+  initMCQ('u0q3', [
+    {q:"Your colleague cannot connect to the internet. They say:", options:["I can't connect to the Wi-Fi.","I look forward to hearing from you.","Could you repeat that?","Let's get started."], answer:"I can't connect to the Wi-Fi."},
+    {q:"You want to help set up a colleague's email. You say:", options:["I'll set that up for you.","I'm having trouble logging on.","Could you tell me?","Try logging on again."], answer:"I'll set that up for you."},
+    {q:"The connection problem may be temporary. You say:", options:["Try logging on again.","I'm having problems with this.","You need to use the app.","I don't know how to set up email."], answer:"Try logging on again."}
+  ]);
 
-initMCQ('u1q1', [
-  {q:"'Access' to a location means:", options:["how easy it is to reach","the cost of renting it","the size of the building","the number of employees"], answer:"how easy it is to reach"},
-  {q:"A 'headquarters' is:", options:["the main office of a company","a place to store products","a designer's workspace","a scientist's testing room"], answer:"the main office of a company"},
-  {q:"'Rent' is:", options:["money paid regularly to use an office or space","money gained from sales","tax paid on goods","a type of vehicle"], answer:"money paid regularly to use an office or space"}
-]);
+  // --- UNIT 2 ---
+  initFill('u1f1',
+    ['motorway','headquarters','warehouse','lab','studio','rent','factory','access'],
+    [
+      {text:'The company\'s ___ is in London where all major decisions are made.', answer:'headquarters'},
+      {text:'Scientists test experiments in a ___.', answer:'lab'},
+      {text:'We store all our products in a large ___ outside the city.', answer:'warehouse'},
+      {text:'Designers work in a ___ with good natural light.', answer:'studio'},
+      {text:'The ___ connects the two cities, and you can travel at 120 km/h.', answer:'motorway'},
+      {text:'___ to the office is excellent — there is a train every 10 minutes.', answer:'access'},
+      {text:'The ___ produces 500 cars per day using automated machines.', answer:'factory'},
+      {text:'Office ___ in the city centre is very expensive per square metre.', answer:'rent'}
+    ]
+  );
 
-initMCQ('u1q2', [
-  {q:"The office is ___ noisy. We cannot concentrate.", options:["too","enough","very enough","too much"], answer:"too"},
-  {q:"There are not ___ chairs for everyone.", options:["enough","too","too many","too much"], answer:"enough"},
-  {q:"The room is big ___. We can fit 20 people in it.", options:["enough","too","too big","not enough"], answer:"enough"},
-  {q:"There is ___ traffic on this road. It takes two hours to arrive.", options:["too much","too many","enough","too"], answer:"too much"},
-  {q:"There are ___ desks in the office. Three people have nowhere to sit.", options:["too many","too much","enough","not too"], answer:"too many"}
-]);
+  initMCQ('u1q1', [
+    {q:"'Access' to a location means:", options:["how easy it is to reach","the cost of renting it","the size of the building","the number of employees"], answer:"how easy it is to reach"},
+    {q:"A 'headquarters' is:", options:["the main office of a company","a place to store products","a designer's workspace","a scientist's testing room"], answer:"the main office of a company"},
+    {q:"'Rent' is:", options:["money paid regularly to use an office or space","money gained from sales","tax paid on goods","a type of vehicle"], answer:"money paid regularly to use an office or space"}
+  ]);
 
-initFill('u1f2',
-  ['too hot','too many','not enough','big enough','too much'],
-  [
-    {text:'The office is ___. Please open a window.', answer:'too hot'},
-    {text:'There are ___ people in this small meeting room.', answer:'too many'},
-    {text:'We have ___ time to finish the project today.', answer:'not enough'},
-    {text:'The car park is ___ for all our staff.', answer:'big enough'},
-    {text:'There is ___ noise coming from the street outside.', answer:'too much'}
-  ]
-);
+  initMCQ('u1q2', [
+    {q:"The office is ___ noisy. We cannot concentrate.", options:["too","enough","very enough","too much"], answer:"too"},
+    {q:"There are not ___ chairs for everyone.", options:["enough","too","too many","too much"], answer:"enough"},
+    {q:"The room is big ___. We can fit 20 people in it.", options:["enough","too","too big","not enough"], answer:"enough"},
+    {q:"There is ___ traffic on this road. It takes two hours to arrive.", options:["too much","too many","enough","too"], answer:"too much"},
+    {q:"There are ___ desks in the office. Three people have nowhere to sit.", options:["too many","too much","enough","not too"], answer:"too many"}
+  ]);
 
-initMatch('u1m1', [
-  {left:"You didn't hear something clearly.", right:"Could you repeat that?"},
-  {left:"You want to check your understanding of what was said.", right:"So you mean...?"},
-  {left:"You want to confirm something specific.", right:"Did you say...?"},
-  {left:"You are summarising to make sure you understood everything.", right:"Let me check I've understood."}
-]);
+  initFill('u1f2',
+    ['too hot','too many','not enough','big enough','too much'],
+    [
+      {text:'The office is ___. Please open a window.', answer:'too hot'},
+      {text:'There are ___ people in this small meeting room.', answer:'too many'},
+      {text:'We have ___ time to finish the project today.', answer:'not enough'},
+      {text:'The car park is ___ for all our staff.', answer:'big enough'},
+      {text:'There is ___ noise coming from the street outside.', answer:'too much'}
+    ]
+  );
 
-initMCQ('u1q3', [
-  {q:"To open a meeting you say:", options:["Let's get started.","I'm sorry it didn't work out.","I'd like to confirm.","Could you repeat that?"], answer:"Let's get started."},
-  {q:"To explain why the meeting is happening you say:", options:["The purpose of today's meeting is...","On the agenda we have...","I'd like to hand over to...","Let's get started."], answer:"The purpose of today's meeting is..."},
-  {q:"To pass control to another speaker you say:", options:["I'd like to hand over to...","The purpose of today's meeting is...","On the agenda we have...","Did you say...?"], answer:"I'd like to hand over to..."}
-]);
+  initMatch('u1m1', [
+    {left:"You didn't hear something clearly.", right:"Could you repeat that?"},
+    {left:"You want to check your understanding of what was said.", right:"So you mean...?"},
+    {left:"You want to confirm something specific.", right:"Did you say...?"},
+    {left:"You are summarising to make sure you understood everything.", right:"Let me check I've understood."}
+  ]);
 
-// --- UNIT 3 ---
-initMCQ('u2q1', [
-  {q:"A 'chain' of shops means:", options:["a group of shops with the same owner","one shop that sells chains","a very large shop","a shop that opened recently"], answer:"a group of shops with the same owner"},
-  {q:"'Profit' is:", options:["money gained after paying all costs","money paid to the government","the price of a product","the tax on goods"], answer:"money gained after paying all costs"},
-  {q:"To 'serve customers' means to:", options:["help and assist customers","charge them money","send them a bill","order food for them"], answer:"help and assist customers"},
-  {q:"Which is NOT a type of retail shop?", options:["warehouse","bakery","pharmacy","bookshop"], answer:"warehouse"}
-]);
+  initMCQ('u1q3', [
+    {q:"To open a meeting you say:", options:["Let's get started.","I'm sorry it didn't work out.","I'd like to confirm.","Could you repeat that?"], answer:"Let's get started."},
+    {q:"To explain why the meeting is happening you say:", options:["The purpose of today's meeting is...","On the agenda we have...","I'd like to hand over to...","Let's get started."], answer:"The purpose of today's meeting is..."},
+    {q:"To pass control to another speaker you say:", options:["I'd like to hand over to...","The purpose of today's meeting is...","On the agenda we have...","Did you say...?"], answer:"I'd like to hand over to..."}
+  ]);
 
-initMatch('u2m1', [
-  {left:"charge", right:"customers"},
-  {left:"make", right:"a profit"},
-  {left:"pay", right:"the bill"},
-  {left:"spend", right:"money"},
-  {left:"order", right:"food"},
-  {left:"shop", right:"online"}
-]);
+  // --- UNIT 3 ---
+  initMCQ('u2q1', [
+    {q:"A 'chain' of shops means:", options:["a group of shops with the same owner","one shop that sells chains","a very large shop","a shop that opened recently"], answer:"a group of shops with the same owner"},
+    {q:"'Profit' is:", options:["money gained after paying all costs","money paid to the government","the price of a product","the tax on goods"], answer:"money gained after paying all costs"},
+    {q:"To 'serve customers' means to:", options:["help and assist customers","charge them money","send them a bill","order food for them"], answer:"help and assist customers"},
+    {q:"Which is NOT a type of retail shop?", options:["warehouse","bakery","pharmacy","bookshop"], answer:"warehouse"}
+  ]);
 
-initFill('u2f1',
-  ['went','arrived','ordered','sent','rang','paid','wrote','met'],
-  [
-    {text:'We ___ to a new restaurant last night.', answer:'went'},
-    {text:'She ___ at the office early this morning.', answer:'arrived'},
-    {text:'He ___ the food online yesterday.', answer:'ordered'},
-    {text:'I ___ the invoice by email last week.', answer:'sent'},
-    {text:'The manager ___ the store three times about the delay.', answer:'rang'},
-    {text:'They ___ the bill by credit card.', answer:'paid'},
-    {text:'She ___ a report about the new shop.', answer:'wrote'},
-    {text:'We ___ the new supplier at the trade conference.', answer:'met'}
-  ]
-);
+  initMatch('u2m1', [
+    {left:"charge", right:"customers"},
+    {left:"make", right:"a profit"},
+    {left:"pay", right:"the bill"},
+    {left:"spend", right:"money"},
+    {left:"order", right:"food"},
+    {left:"shop", right:"online"}
+  ]);
 
-initMCQ('u2q2', [
-  {q:"'She ___ working when I called.' (past continuous)", options:["was","is","were","did"], answer:"was"},
-  {q:"'They ___ discussing the new shop when the manager arrived.'", options:["were","was","are","did"], answer:"were"},
-  {q:"'I ___ not paying attention when she spoke.'", options:["was","were","did","am"], answer:"was"}
-]);
+  initFill('u2f1',
+    ['went','arrived','ordered','sent','rang','paid','wrote','met'],
+    [
+      {text:'We ___ to a new restaurant last night.', answer:'went'},
+      {text:'She ___ at the office early this morning.', answer:'arrived'},
+      {text:'He ___ the food online yesterday.', answer:'ordered'},
+      {text:'I ___ the invoice by email last week.', answer:'sent'},
+      {text:'The manager ___ the store three times about the delay.', answer:'rang'},
+      {text:'They ___ the bill by credit card.', answer:'paid'},
+      {text:'She ___ a report about the new shop.', answer:'wrote'},
+      {text:'We ___ the new supplier at the trade conference.', answer:'met'}
+    ]
+  );
 
-initMatch('u2m2', [
-  {left:"Introduce your first point", right:"First of all, ... / I'd like to start by ..."},
-  {left:"Move to the next point", right:"Let's move on to ... / Then ..."},
-  {left:"Connect to the following topic", right:"That brings me to ..."},
-  {left:"Add a further point", right:"Secondly, ... / And ..."},
-  {left:"Finish the presentation", right:"Finally, ... / Just to sum up ..."}
-]);
+  initMCQ('u2q2', [
+    {q:"'She ___ working when I called.' (past continuous)", options:["was","is","were","did"], answer:"was"},
+    {q:"'They ___ discussing the new shop when the manager arrived.'", options:["were","was","are","did"], answer:"were"},
+    {q:"'I ___ not paying attention when she spoke.'", options:["was","were","did","am"], answer:"was"}
+  ]);
 
-// --- UNIT 4 ---
-initMCQ('u3q1', [
-  {q:"A 'temporary worker' is employed for:", options:["a limited period of time","the whole of their career","35-40 hours per week","flexible hours only"], answer:"a limited period of time"},
-  {q:"'Flexible hours' means:", options:["you can choose when to work","you must work exactly 9-5","you work from home all week","you have a fixed schedule that never changes"], answer:"you can choose when to work"},
-  {q:"An 'intern' is:", options:["a student or trainee working for experience","a retired person","someone who is unemployed","a permanent full-time employee"], answer:"a student or trainee working for experience"}
-]);
+  initMatch('u2m2', [
+    {left:"Introduce your first point", right:"First of all, ... / I'd like to start by ..."},
+    {left:"Move to the next point", right:"Let's move on to ... / Then ..."},
+    {left:"Connect to the following topic", right:"That brings me to ..."},
+    {left:"Add a further point", right:"Secondly, ... / And ..."},
+    {left:"Finish the presentation", right:"Finally, ... / Just to sum up ..."}
+  ]);
 
-initFill('u3f1',
-  ['employed','unemployed','retired','self-employed','staff'],
-  [
-    {text:'She left the company last year and is now ___.', answer:'unemployed'},
-    {text:'He works for himself — he is ___.', answer:'self-employed'},
-    {text:'All ___ must attend the mandatory safety training.', answer:'staff'},
-    {text:'My grandfather stopped working at 65. He is now ___.', answer:'retired'},
-    {text:'She is ___ by a large bank in the city centre.', answer:'employed'}
-  ]
-);
+  // --- UNIT 4 ---
+  initMCQ('u3q1', [
+    {q:"A 'temporary worker' is employed for:", options:["a limited period of time","the whole of their career","35-40 hours per week","flexible hours only"], answer:"a limited period of time"},
+    {q:"'Flexible hours' means:", options:["you can choose when to work","you must work exactly 9-5","you work from home all week","you have a fixed schedule that never changes"], answer:"you can choose when to work"},
+    {q:"An 'intern' is:", options:["a student or trainee working for experience","a retired person","someone who is unemployed","a permanent full-time employee"], answer:"a student or trainee working for experience"}
+  ]);
 
-initTI('u3t1', [
-  {prompt:"go \u2192 ___", answer:"gone"},
-  {prompt:"buy \u2192 ___", answer:"bought"},
-  {prompt:"give \u2192 ___", answer:"given"},
-  {prompt:"meet \u2192 ___", answer:"met"},
-  {prompt:"read \u2192 ___", answer:"read"},
-  {prompt:"see \u2192 ___", answer:"seen"},
-  {prompt:"sell \u2192 ___", answer:"sold"},
-  {prompt:"speak \u2192 ___", answer:"spoken"},
-  {prompt:"take \u2192 ___", answer:"taken"},
-  {prompt:"write \u2192 ___", answer:"written"}
-]);
+  initFill('u3f1',
+    ['employed','unemployed','retired','self-employed','staff'],
+    [
+      {text:'She left the company last year and is now ___.', answer:'unemployed'},
+      {text:'He works for himself — he is ___.', answer:'self-employed'},
+      {text:'All ___ must attend the mandatory safety training.', answer:'staff'},
+      {text:'My grandfather stopped working at 65. He is now ___.', answer:'retired'},
+      {text:'She is ___ by a large bank in the city centre.', answer:'employed'}
+    ]
+  );
 
-initMCQ('u3q2', [
-  {q:"'Have you ever ___ to New York?' (present perfect)", options:["been","went","go","be"], answer:"been"},
-  {q:"'She ___ worked at Barclays for five years.'", options:["has","have","is","did"], answer:"has"},
-  {q:"'I ___ never ___ sushi.' (present perfect negative)", options:["have / eaten","has / ate","did / eat","have / ate"], answer:"have / eaten"}
-]);
+  initTI('u3t1', [
+    {prompt:"go \u2192 ___", answer:"gone"},
+    {prompt:"buy \u2192 ___", answer:"bought"},
+    {prompt:"give \u2192 ___", answer:"given"},
+    {prompt:"meet \u2192 ___", answer:"met"},
+    {prompt:"read \u2192 ___", answer:"read"},
+    {prompt:"see \u2192 ___", answer:"seen"},
+    {prompt:"sell \u2192 ___", answer:"sold"},
+    {prompt:"speak \u2192 ___", answer:"spoken"},
+    {prompt:"take \u2192 ___", answer:"taken"},
+    {prompt:"write \u2192 ___", answer:"written"}
+  ]);
 
-initMCQ('u3q3', [
-  {q:"You want to change a meeting time politely. You say:", options:["Do you mind if we fix another time?","I am delighted to confirm.","Feel free to call me.","Unfortunately I am unable to attend."], answer:"Do you mind if we fix another time?"},
-  {q:"You are calling to discuss the meeting. You begin:", options:["I'm calling about our meeting on Tuesday.","I'm free on Wednesday morning.","Sorry to bother you.","Thanks for being so flexible."], answer:"I'm calling about our meeting on Tuesday."},
-  {q:"You want to move the meeting to an earlier time. You say:", options:["Can we bring it forward?","Do you want to postpone it?","Friday's out for me.","How does the afternoon suit you?"], answer:"Can we bring it forward?"}
-]);
+  initMCQ('u3q2', [
+    {q:"'Have you ever ___ to New York?' (present perfect)", options:["been","went","go","be"], answer:"been"},
+    {q:"'She ___ worked at Barclays for five years.'", options:["has","have","is","did"], answer:"has"},
+    {q:"'I ___ never ___ sushi.' (present perfect negative)", options:["have / eaten","has / ate","did / eat","have / ate"], answer:"have / eaten"}
+  ]);
 
-initMatch('u3m1', [
-  {left:"Confirming a meeting formally", right:"This is to confirm our meeting."},
-  {left:"Expressing happiness to confirm", right:"I am delighted to confirm."},
-  {left:"Inviting further contact", right:"Feel free to call me."},
-  {left:"Saying you cannot attend", right:"Unfortunately, I am unable to attend."},
-  {left:"Closing an arrangement email", right:"I look forward to seeing you."}
-]);
+  initMCQ('u3q3', [
+    {q:"You want to change a meeting time politely. You say:", options:["Do you mind if we fix another time?","I am delighted to confirm.","Feel free to call me.","Unfortunately I am unable to attend."], answer:"Do you mind if we fix another time?"},
+    {q:"You are calling to discuss the meeting. You begin:", options:["I'm calling about our meeting on Tuesday.","I'm free on Wednesday morning.","Sorry to bother you.","Thanks for being so flexible."], answer:"I'm calling about our meeting on Tuesday."},
+    {q:"You want to move the meeting to an earlier time. You say:", options:["Can we bring it forward?","Do you want to postpone it?","Friday's out for me.","How does the afternoon suit you?"], answer:"Can we bring it forward?"}
+  ]);
 
-// --- UNIT 5 ---
-initMCQ('u4q1', [
-  {q:"'Currency' means:", options:["the type of money a country uses","the act of paying","a small unit of money","the financial system"], answer:"the type of money a country uses"},
-  {q:"A 'cashless economy' means:", options:["no coins or notes are used","there is no money at all","only cash is used","the bank controls all transactions"], answer:"no coins or notes are used"},
-  {q:"'Tax revenues' are:", options:["money collected by the government","money you borrow from a bank","money stored in a digital wallet","money gained from product sales"], answer:"money collected by the government"},
-  {q:"Which is NOT a payment method?", options:["cash dispenser","bank transfer","credit card","mobile phone payment"], answer:"cash dispenser"}
-]);
+  initMatch('u3m1', [
+    {left:"Confirming a meeting formally", right:"This is to confirm our meeting."},
+    {left:"Expressing happiness to confirm", right:"I am delighted to confirm."},
+    {left:"Inviting further contact", right:"Feel free to call me."},
+    {left:"Saying you cannot attend", right:"Unfortunately, I am unable to attend."},
+    {left:"Closing an arrangement email", right:"I look forward to seeing you."}
+  ]);
 
-initFill('u4f1',
-  ['cash flow','cash register','petty cash','cash dispenser','short of cash'],
-  [
-    {text:'I need to get some money — let me find a ___.', answer:'cash dispenser'},
-    {text:'The shop uses a ___ to process each customer payment.', answer:'cash register'},
-    {text:'The company has excellent ___. Money comes in regularly every month.', answer:'cash flow'},
-    {text:'We use ___ to pay for small office items like pens and paper.', answer:'petty cash'},
-    {text:'Sorry, I cannot pay right now — I am ___ this week.', answer:'short of cash'}
-  ]
-);
+  // --- UNIT 5 ---
+  initMCQ('u4q1', [
+    {q:"'Currency' means:", options:["the type of money a country uses","the act of paying","a small unit of money","the financial system"], answer:"the type of money a country uses"},
+    {q:"A 'cashless economy' means:", options:["no coins or notes are used","there is no money at all","only cash is used","the bank controls all transactions"], answer:"no coins or notes are used"},
+    {q:"'Tax revenues' are:", options:["money collected by the government","money you borrow from a bank","money stored in a digital wallet","money gained from product sales"], answer:"money collected by the government"},
+    {q:"Which is NOT a payment method?", options:["cash dispenser","bank transfer","credit card","mobile phone payment"], answer:"cash dispenser"}
+  ]);
 
-initMCQ('u4q2', [
-  {q:"'If interest rates increase, borrowing ___ go down.' (first conditional)", options:["will","would","is going to","might"], answer:"will"},
-  {q:"'If you take your lunch to work, you ___ money.'", options:["will save","would save","saves","are saving"], answer:"will save"},
-  {q:"'If she ___ early, she will catch the train.' (first conditional)", options:["leaves","will leave","left","is leaving"], answer:"leaves"}
-]);
+  initFill('u4f1',
+    ['cash flow','cash register','petty cash','cash dispenser','short of cash'],
+    [
+      {text:'I need to get some money — let me find a ___.', answer:'cash dispenser'},
+      {text:'The shop uses a ___ to process each customer payment.', answer:'cash register'},
+      {text:'The company has excellent ___. Money comes in regularly every month.', answer:'cash flow'},
+      {text:'We use ___ to pay for small office items like pens and paper.', answer:'petty cash'},
+      {text:'Sorry, I cannot pay right now — I am ___ this week.', answer:'short of cash'}
+    ]
+  );
 
-initFill('u4f2',
-  ['will go down','spend','don\'t use','will save','use'],
-  [
-    {text:'If you ___ a budgeting app, you can track your spending easily.', answer:'use'},
-    {text:'If prices go up, people ___ less on luxury items.', answer:'will go down'},
-    {text:'If you ___ public transport, parking will cost you more money.', answer:"don't use"},
-    {text:'If they ___ less energy each month, their costs will be lower.', answer:'spend'},
-    {text:'If you plan your budget carefully, you ___ more money each month.', answer:'will save'}
-  ]
-);
+  initMCQ('u4q2', [
+    {q:"'If interest rates increase, borrowing ___ go down.' (first conditional)", options:["will","would","is going to","might"], answer:"will"},
+    {q:"'If you take your lunch to work, you ___ money.'", options:["will save","would save","saves","are saving"], answer:"will save"},
+    {q:"'If she ___ early, she will catch the train.' (first conditional)", options:["leaves","will leave","left","is leaving"], answer:"leaves"}
+  ]);
 
-initMCQ('u4q3', [
-  {q:"How do you best describe 0.95%?", options:["under one percent","roughly a quarter","over half","nearly three quarters"], answer:"under one percent"},
-  {q:"How do you best describe 23.5%?", options:["roughly a quarter","over half","about two in five","nearly three quarters"], answer:"roughly a quarter"},
-  {q:"How do you best describe 52%?", options:["over half","roughly a quarter","about two in five","nearly three quarters"], answer:"over half"},
-  {q:"How do you best describe 73.9%?", options:["nearly three quarters","over half","roughly a quarter","about two in five"], answer:"nearly three quarters"},
-  {q:"How do you best describe 39.4%?", options:["about two in five","over half","roughly a quarter","nearly three quarters"], answer:"about two in five"}
-]);
+  initFill('u4f2',
+    ['will go down','spend','don\'t use','will save','use'],
+    [
+      {text:'If you ___ a budgeting app, you can track your spending easily.', answer:'use'},
+      {text:'If prices go up, people ___ less on luxury items.', answer:'will go down'},
+      {text:'If you ___ public transport, parking will cost you more money.', answer:"don't use"},
+      {text:'If they ___ less energy each month, their costs will be lower.', answer:'spend'},
+      {text:'If you plan your budget carefully, you ___ more money each month.', answer:'will save'}
+    ]
+  );
 
-// --- UNIT 6 ---
-initMCQ('u5q1', [
-  {q:"'Reliable' means:", options:["always does what they say they will do","has lots of professional experience","treats others with respect","believes that others are trustworthy"], answer:"always does what they say they will do"},
-  {q:"'Conflict' in a team means:", options:["a serious problem or disagreement","a decision that everyone accepts","working well together","treating colleagues with respect"], answer:"a serious problem or disagreement"},
-  {q:"'Management' is:", options:["controlling and organising a team or business","trusting your colleagues to do their jobs","having different opinions about something","working cooperatively toward a goal"], answer:"controlling and organising a team or business"}
-]);
+  initMCQ('u4q3', [
+    {q:"How do you best describe 0.95%?", options:["under one percent","roughly a quarter","over half","nearly three quarters"], answer:"under one percent"},
+    {q:"How do you best describe 23.5%?", options:["roughly a quarter","over half","about two in five","nearly three quarters"], answer:"roughly a quarter"},
+    {q:"How do you best describe 52%?", options:["over half","roughly a quarter","about two in five","nearly three quarters"], answer:"over half"},
+    {q:"How do you best describe 73.9%?", options:["nearly three quarters","over half","roughly a quarter","about two in five"], answer:"nearly three quarters"},
+    {q:"How do you best describe 39.4%?", options:["about two in five","over half","roughly a quarter","nearly three quarters"], answer:"about two in five"}
+  ]);
 
-initMatch('u5m1', [
-  {left:"agree", right:"agreement"},
-  {left:"argue", right:"argument"},
-  {left:"communicate", right:"communication"},
-  {left:"cooperate", right:"cooperation"},
-  {left:"disagree", right:"disagreement"},
-  {left:"manage", right:"management"}
-]);
+  // --- UNIT 6 ---
+  initMCQ('u5q1', [
+    {q:"'Reliable' means:", options:["always does what they say them will do","has lots of professional experience","treats others with respect","believes that others are trustworthy"], answer:"always does what they say them will do"},
+    {q:"'Conflict' in a team means:", options:["a serious problem or disagreement","a decision that everyone accepts","working well together","treating colleagues with respect"], answer:"a serious problem or disagreement"},
+    {q:"'Management' is:", options:["controlling and organising a team or business","trusting your colleagues to do their jobs","having different opinions about something","working cooperatively toward a goal"], answer:"controlling and organising a team or business"}
+  ]);
 
-initMCQ('u5q2', [
-  {q:"'___ needs to review this report.' (a person, we do not know who)", options:["Someone","Everyone","Something","Somewhere"], answer:"Someone"},
-  {q:"'___ was at the conference.' (all people were there)", options:["Everyone","Someone","Everything","Everywhere"], answer:"Everyone"},
-  {q:"'I left my bag ___.' (a place, we do not know where)", options:["somewhere","something","someone","everywhere"], answer:"somewhere"},
-  {q:"'___ is ready for the product launch.' (all things are ready)", options:["Everything","Everyone","Something","Somewhere"], answer:"Everything"}
-]);
+  initMatch('u5m1', [
+    {left:"agree", right:"agreement"},
+    {left:"argue", right:"argument"},
+    {left:"communicate", right:"communication"},
+    {left:"cooperate", right:"cooperation"},
+    {left:"disagree", right:"disagreement"},
+    {left:"manage", right:"management"}
+  ]);
 
-initFill('u5f1',
-  ['someone','everyone','something','somewhere','everything'],
-  [
-    {text:'___ in the team agreed with the new plan.', answer:'everyone'},
-    {text:'___ needs to update the shared project file.', answer:'someone'},
-    {text:'I put my phone ___ in the office but I cannot find it.', answer:'somewhere'},
-    {text:'___ went wrong with the presentation software before the meeting.', answer:'something'},
-    {text:'___ is prepared for tomorrow — we are ready to start.', answer:'everything'}
-  ]
-);
+  initMCQ('u5q2', [
+    {q:"'___ needs to review this report.' (a person, we do not know who)", options:["Someone","Everyone","Something","Somewhere"], answer:"Someone"},
+    {q:"'___ was at the conference.' (all people were there)", options:["Everyone","Someone","Everything","Everywhere"], answer:"Everyone"},
+    {q:"'I left my bag ___.' (a place, we do not know where)", options:["somewhere","something","someone","everywhere"], answer:"somewhere"},
+    {q:"'___ is ready for the product launch.' (all things are ready)", options:["Everything","Everyone","Something","Somewhere"], answer:"Everything"}
+  ]);
 
-initMCQ('u5q3', [
-  {q:"Your colleague did not get the job they wanted. You say:", options:["I'm sorry it didn't work out.","I really like that idea!","Let's get started.","What a good idea!"], answer:"I'm sorry it didn't work out."},
-  {q:"You want to encourage your colleague to try again. You say:", options:["You can always try again.","Of course, there is the problem of cost.","I'm just wondering about...","That might not be a bad idea."], answer:"You can always try again."},
-  {q:"You want to show you understand how important it was to them:", options:["I know how important it was to you.","I'm sorry it didn't work out.","Look at it this way:","It sounds like you put in a lot of work."], answer:"I know how important it was to you."}
-]);
+  initFill('u5f1',
+    ['someone','everyone','something','somewhere','everything'],
+    [
+      {text:'___ in the team agreed with the new plan.', answer:'everyone'},
+      {text:'___ needs to update the shared project file.', answer:'someone'},
+      {text:'I put my phone ___ in the office but I cannot find it.', answer:'somewhere'},
+      {text:'___ went wrong with the presentation software before the meeting.', answer:'something'},
+      {text:'___ is prepared for tomorrow — we are ready to start.', answer:'everything'}
+    ]
+  );
 
-initMatch('u5m2', [
-  {left:"Show enthusiasm for a colleague's idea", right:"I really like that idea! / What a good idea!"},
-  {left:"Introduce a related point in discussion", right:"And while we're on the subject..."},
-  {left:"Mention a potential problem gently", right:"Of course, there is the problem of cost."},
-  {left:"Express gentle hesitation or concern", right:"I'm just wondering about..."},
-  {left:"Suggest something might actually work", right:"That might not be such a bad idea."}
-]);
+  initMCQ('u5q3', [
+    {q:"Your colleague did not get the job they wanted. You say:", options:["I'm sorry it didn't work out.","I really like that idea!","Let's get started.","What a good idea!"], answer:"I'm sorry it didn't work out."},
+    {q:"You want to encourage your colleague to try again. You say:", options:["You can always try again.","Of course, there is the problem of cost.","I'm just wondering about...","That might not be a bad idea."], answer:"You can always try again."},
+    {q:"You want to show you understand how important it was to them:", options:["I know how important it was to you.","I'm sorry it didn't work out.","Look at it this way:","It sounds like you put in a lot of work."], answer:"I know how important it was to you."}
+  ]);
 
-// --- UNIT 7 ---
-initMCQ('u6q1', [
-  {q:"A 'brief' in R&D is:", options:["a document stating the problem and goal","a simple drawing of ideas","feedback collected from users","the first working version of a product"], answer:"a document stating the problem and goal"},
-  {q:"'Sketches' in the design process are:", options:["simple drawings of early ideas","the first working prototype","final improvements to the product","user feedback collection forms"], answer:"simple drawings of early ideas"},
-  {q:"To 'launch' a product means to:", options:["make it available to buy","test it for the first time","write the initial design brief","collect and analyse user feedback"], answer:"make it available to buy"},
-  {q:"'Feedback' in R&D means:", options:["opinions from users about the product","the very first version of the product","simple design drawings and sketches","the answers to key design problems"], answer:"opinions from users about the product"}
-]);
+  initMatch('u5m2', [
+    {left:"Show enthusiasm for a colleague's idea", right:"I really like that idea! / What a good idea!"},
+    {left:"Introduce a related point in discussion", right:"And while we're on the subject..."},
+    {left:"Mention a potential problem gently", right:"Of course, there is the problem of cost."},
+    {left:"Express gentle hesitation or concern", right:"I'm just wondering about..."},
+    {left:"Suggest something might actually work", right:"That might not be such a bad idea."}
+  ]);
 
-initMatch('u6m1', [
-  {left:"designers", right:"create and develop the product"},
-  {left:"product testers", right:"give feedback on the prototype"},
-  {left:"consumers", right:"purchase the finished product"}
-]);
+  // --- UNIT 7 ---
+  initMCQ('u6q1', [
+    {q:"A 'brief' in R&D is:", options:["a document stating the problem and goal","a simple drawing of ideas","feedback collected from users","the first working version of a product"], answer:"a document stating the problem and goal"},
+    {q:"'Sketches' in the design process are:", options:["simple drawings of early ideas","the first working prototype","final improvements to the product","user feedback collection forms"], answer:"simple drawings of early ideas"},
+    {q:"To 'launch' a product means to:", options:["make it available to buy","test it for the first time","write the initial design brief","collect and analyse user feedback"], answer:"make it available to buy"},
+    {q:"'Feedback' in R&D means:", options:["opinions from users about the product","the very first version of the product","simple design drawings and sketches","the answers to key design problems"], answer:"opinions from users about the product"}
+  ]);
 
-initMCQ('u6q2', [
-  {q:"'Guests ___ choose facial recognition.' (it is possible — optional)", options:["can","have to","need to","must"], answer:"can"},
-  {q:"'Guests ___ give their names.' (it is necessary — required)", options:["have to","can","don't have to","could"], answer:"have to"},
-  {q:"'They ___ say which language they speak.' (it is not necessary)", options:["don't have to","have to","can't","need to"], answer:"don't have to"},
-  {q:"'They ___ use a traditional key.' (it is not necessary)", options:["don't need to","can","have to","must"], answer:"don't need to"}
-]);
+  initMatch('u6m1', [
+    {left:"designers", right:"create and develop the product"},
+    {left:"product testers", right:"give feedback on the prototype"},
+    {left:"consumers", right:"purchase the finished product"}
+  ]);
 
-initFill('u6f1',
-  ['can','have to','can\'t','don\'t have to','need to'],
-  [
-    {text:'Members ___ use the gym at any time — it is open 24 hours a day.', answer:'can'},
-    {text:'All visitors ___ sign in at reception. It is a security requirement.', answer:'have to'},
-    {text:'You ___ take photos inside the lab. It is not permitted.', answer:"can't"},
-    {text:'Staff ___ wear a uniform here — smart casual clothing is fine.', answer:"don't have to"},
-    {text:'You ___ download the app before attending your first session.', answer:'need to'}
-  ]
-);
+  initMCQ('u6q2', [
+    {q:"'Guests ___ choose facial recognition.' (it is possible — optional)", options:["can","have to","need to","must"], answer:"can"},
+    {q:"'Guests ___ give their names.' (it is necessary — required)", options:["have to","can","don't have to","could"], answer:"have to"},
+    {q:"'They ___ say which language they speak.' (it is not necessary)", options:["don't have to","have to","can't","need to"], answer:"don't have to"},
+    {q:"'They ___ use a traditional key.' (it is not necessary)", options:["don't need to","can","have to","must"], answer:"don't need to"}
+  ]);
 
-initMCQ('u6q3', [
-  {q:"Which phrase introduces the FIRST step in instructions?", options:["You start by clicking...","After that,","The next step is to","Once you've done that,"], answer:"You start by clicking..."},
-  {q:"Which phrase connects step 2 to step 3 in a sequence?", options:["Then, you","You start by clicking...","The last step is to","When you've completed all the steps"], answer:"Then, you"},
-  {q:"Which phrase introduces the FINAL step?", options:["The last step is to","After that,","You start by clicking...","Then, you"], answer:"The last step is to"}
-]);
+  initFill('u6f1',
+    ['can','have to','can\'t','don\'t have to','need to'],
+    [
+      {text:'Members ___ use the gym at any time — it is open 24 hours a day.', answer:'can'},
+      {text:'All visitors ___ sign in at reception. It is a security requirement.', answer:'have to'},
+      {text:'You ___ take photos inside the lab. It is not permitted.', answer:"can't"},
+      {text:'Staff ___ wear a uniform here — smart casual clothing is fine.', answer:"don't have to"},
+      {text:'You ___ download the app before attending your first session.', answer:'need to'}
+    ]
+  );
 
-initMatch('u6m2', [
-  {left:"Screen is blank.", right:"Have you switched on your webcam?"},
-  {left:"Audio keeps breaking up.", right:"Would you mind hanging up and I'll call you back?"},
-  {left:"Lot of background noise.", right:"Could you move to a quieter location?"},
-  {left:"Echo on the call.", right:"Can you check your audio settings?"},
-  {left:"Connection is bad.", right:"Can you check your internet connection?"}
-]);
+  initMCQ('u6q3', [
+    {q:"Which phrase introduces the FIRST step in instructions?", options:["You start by clicking...","After that,","The next step is to","Once you've done that,"], answer:"You start by clicking..."},
+    {q:"Which phrase connects step 2 to step 3 in a sequence?", options:["Then, you","You start by clicking...","The last step is to","When you've completed all the steps"], answer:"Then, you"},
+    {q:"Which phrase introduces the FINAL step?", options:["The last step is to","After that,","You start by clicking...","Then, you"], answer:"The last step is to"}
+  ]);
 
-// --- UNIT 8 ---
-initMCQ('u7q1', [
-  {q:"'Conservation' means:", options:["keeping nature safe","causing damage to ecosystems","building more roads","increasing levels of pollution"], answer:"keeping nature safe"},
-  {q:"Which word means 'a big change caused by something'?", options:["impact","reduction","protection","recycling"], answer:"impact"},
-  {q:"'Recycled' materials are:", options:["made from previously used materials","completely new and unused materials","very expensive raw materials","natural untouched materials from the ground"], answer:"made from previously used materials"},
-  {q:"Which is NOT a natural place from Unit 8?", options:["congestion charge","forest","waterfall","national park"], answer:"congestion charge"}
-]);
+  initMatch('u6m2', [
+    {left:"Screen is blank.", right:"Have you switched on your webcam?"},
+    {left:"Audio keeps breaking up.", right:"Would you mind hanging up and I'll call you back?"},
+    {left:"Lot of background noise.", right:"Could you move to a quieter location?"},
+    {left:"Echo on the call.", right:"Can you check your audio settings?"},
+    {left:"Connection is bad.", right:"Can you check your internet connection?"}
+  ]);
 
-initMatch('u7m1', [
-  {left:"conserve", right:"conservation"},
-  {left:"damage", right:"damage"},
-  {left:"destroy", right:"destruction"},
-  {left:"protect", right:"protection"},
-  {left:"pollute", right:"pollution"},
-  {left:"reduce", right:"reduction"}
-]);
+  // --- UNIT 8 ---
+  initMCQ('u7q1', [
+    {q:"'Conservation' means:", options:["keeping nature safe","causing damage to ecosystems","building more roads","increasing levels of pollution"], answer:"keeping nature safe"},
+    {q:"Which word means 'a big change caused by something'?", options:["impact","reduction","protection","recycling"], answer:"impact"},
+    {q:"'Recycled' materials are:", options:["made from previously used materials","completely new and unused materials","very expensive raw materials","natural untouched materials from the ground"], answer:"made from previously used materials"},
+    {q:"Which is NOT a natural place from Unit 8?", options:["congestion charge","forest","waterfall","national park"], answer:"congestion charge"}
+  ]);
 
-initMCQ('u7q2', [
-  {q:"'People ___ drive in cities.' (it is a bad idea — advising against it)", options:["shouldn't","couldn't","might not","can't"], answer:"shouldn't"},
-  {q:"'Other cities ___ use this method.' (it is a possible option)", options:["could","should","must","have to"], answer:"could"},
-  {q:"'You ___ spend more on public transport.' (it is a good idea — recommending it)", options:["should","could","shouldn't","must"], answer:"should"}
-]);
+  initMatch('u7m1', [
+    {left:"conserve", right:"conservation"},
+    {left:"damage", right:"damage"},
+    {left:"destroy", right:"destruction"},
+    {left:"protect", right:"protection"},
+    {left:"pollute", right:"pollution"},
+    {left:"reduce", right:"reduction"}
+  ]);
 
-initFill('u7f1',
-  ['should','shouldn\'t','could'],
-  [
-    {text:'Companies ___ reduce their plastic packaging. It is a good idea.', answer:'should'},
-    {text:'People ___ leave litter in national parks. It is a bad idea.', answer:"shouldn't"},
-    {text:'We ___ introduce more cycle lanes as one possible option.', answer:'could'},
-    {text:'The government ___ invest more in electric bus networks.', answer:'should'},
-    {text:'Cities ___ ban single-use plastics to help reduce waste.', answer:'could'}
-  ]
-);
+  initMCQ('u7q2', [
+    {q:"'People ___ drive in cities.' (it is a bad idea — advising against it)", options:["shouldn't","couldn't","might not","can't"], answer:"shouldn't"},
+    {q:"'Other cities ___ use this method.' (it is a possible option)", options:["could","should","must","have to"], answer:"could"},
+    {q:"'You ___ spend more on public transport.' (it is a good idea — recommending it)", options:["should","could","shouldn't","must"], answer:"should"}
+  ]);
 
-initMCQ('u7q3', [
-  {q:"Your manager says 'You're great with technology.' This is:", options:["positive feedback","negative feedback","a question about your skills","a recommendation for training"], answer:"positive feedback"},
-  {q:"You receive feedback from your manager. You respond:", options:["I appreciate your comments.","Does anyone have a question?","So the question is about...","We're pleased with your progress."], answer:"I appreciate your comments."},
-  {q:"You mostly agree with the feedback but not completely. You say:", options:["I mostly agree with your assessment.","That's not right at all.","I totally disagree with that.","Does that answer your question?"], answer:"I mostly agree with your assessment."},
-  {q:"You want to politely challenge a piece of feedback:", options:["That's an interesting idea, but...","I appreciate your comments.","I'd like to try and do that in the future.","We're pleased with your progress."], answer:"That's an interesting idea, but..."}
-]);
+  initFill('u7f1',
+    ['should','shouldn\'t','could'],
+    [
+      {text:'Companies ___ reduce their plastic packaging. It is a good idea.', answer:'should'},
+      {text:'People ___ leave litter in national parks. It is a bad idea.', answer:"shouldn't"},
+      {text:'We ___ introduce more cycle lanes as one possible option.', answer:'could'},
+      {text:'The government ___ invest more in electric bus networks.', answer:'should'},
+      {text:'Cities ___ ban single-use plastics to help reduce waste.', answer:'could'}
+    ]
+  );
 
-initMatch('u7m2', [
-  {left:"Open the Q&A session", right:"Does anyone have a question?"},
-  {left:"Summarise a question from the audience", right:"So the question is about..."},
-  {left:"Acknowledge a good question", right:"It's a good question, thanks."},
-  {left:"Check that your answer helped", right:"Does that answer your question?"},
-  {left:"You do not know the answer", right:"I'm not sure I can answer that."}
-]);
+  initMCQ('u7q3', [
+    {q:"Your manager says 'You're great with technology.' This is:", options:["positive feedback","negative feedback","a question about your skills","a recommendation for training"], answer:"positive feedback"},
+    {q:"You receive feedback from your manager. You respond:", options:["I appreciate your comments.","Does anyone have a question?","So the question is about...","We're pleased with your progress."], answer:"I appreciate your comments."},
+    {q:"You mostly agree with the feedback but not completely. You say:", options:["I mostly agree with your assessment.","That's not right at all.","I totally disagree with that.","Does that answer your question?"], answer:"I mostly agree with your assessment."},
+    {q:"You want to politely challenge a piece of feedback:", options:["That's an interesting idea, but...","I appreciate your comments.","I'd like to try and do that in the future.","We're pleased with your progress."], answer:"That's an interesting idea, but..."}
+  ]);
 
-// --- UNIT 9: CAREER CHOICES ---
-initMatch('u8m1', [
-  {left:'think outside the box', right:'find creative, unconventional solutions'},
-  {left:'a can-do attitude', right:'a positive, willing approach to any task'},
-  {left:'set goals', right:'plan specific targets you want to achieve'},
-  {left:'critical thinking', right:'carefully analyse information before deciding'},
-  {left:'determination', right:'continue working hard despite difficulties'},
-  {left:'reliability', right:'being consistently trustworthy and dependable'}
-]);
+  initMatch('u7m2', [
+    {left:"Open the Q&A session", right:"Does anyone have a question?"},
+    {left:"Summarise a question from the audience", right:"So the question is about..."},
+    {left:"Acknowledge a good question", right:"It's a good question, thanks."},
+    {left:"Check that your answer helped", right:"Does that answer your question?"},
+    {left:"You do not know the answer", right:"I'm not sure I can answer that."}
+  ]);
 
-initFill('u8f1',
-  ['determination','ambitious','resourceful','reliable','enthusiastic','authentic'],
-  [
-    {text:'She never gives up when things are difficult — she shows great ___.', answer:'determination'},
-    {text:'He wants to reach the top of the company one day — he is very ___.', answer:'ambitious'},
-    {text:'She always finds creative solutions with limited resources — she is very ___.', answer:'resourceful'},
-    {text:'You can always count on him to complete his work on time — he is ___.', answer:'reliable'},
-    {text:'She shows great energy and passion for her job — she is very ___.', answer:'enthusiastic'},
-    {text:'People trust him because he is always genuine and ___.', answer:'authentic'}
-  ]
-);
+  // --- UNIT 9: CAREER CHOICES ---
+  initMatch('u8m1', [
+    {left:'think outside the box', right:'find creative, unconventional solutions'},
+    {left:'a can-do attitude', right:'a positive, willing approach to any task'},
+    {left:'set goals', right:'plan specific targets you want to achieve'},
+    {left:'critical thinking', right:'carefully analyse information before deciding'},
+    {left:'determination', right:'continue working hard despite difficulties'},
+    {left:'reliability', right:'being consistently trustworthy and dependable'}
+  ]);
 
-initMCQ('u8q1', [
-  {q:"'You decided to save money for a holiday a year in advance.' This shows you can:", options:["think outside the box","set goals","be reliable","use critical thinking"], answer:"set goals"},
-  {q:"'You carefully checked information you found online before using it.' This shows:", options:["determination","reliability","critical thinking","a can-do attitude"], answer:"critical thinking"},
-  {q:"'You completed a very difficult project without complaining.' This shows:", options:["resourcefulness","set goals","a can-do attitude","critical thinking"], answer:"a can-do attitude"},
-  {q:"Which of these is a transferable skill?", options:["knowing only one specific piece of software","speaking only your native language","adaptability across different roles and tasks","working only in one industry"], answer:"adaptability across different roles and tasks"}
-]);
+  initFill('u8f1',
+    ['determination','ambitious','resourceful','reliable','enthusiastic','authentic'],
+    [
+      {text:'She never gives up when things are difficult — she shows great ___.', answer:'determination'},
+      {text:'He wants to reach the top of the company one day — he is very ___.', answer:'ambitious'},
+      {text:'She always finds creative solutions with limited resources — she is very ___.', answer:'resourceful'},
+      {text:'You can always count on him to complete his work on time — he is ___.', answer:'reliable'},
+      {text:'She shows great energy and passion for her job — she is very ___.', answer:'enthusiastic'},
+      {text:'People trust him because he is always genuine and ___.', answer:'authentic'}
+    ]
+  );
 
-initFill('u8f2',
-  ['should','could','Why','How','ought to','try'],
-  [
-    {text:'You ___ update your CV with more specific examples from your experience.', answer:'should'},
-    {text:'You ___ ask your teacher for help with your online profile.', answer:'could'},
-    {text:"___ don't you join some professional networking groups online?", answer:'Why'},
-    {text:'___ about volunteering to show your transferable skills?', answer:'How'},
-    {text:'You ___ include examples from your personal life as well.', answer:'ought to'},
-    {text:'Why not ___ writing a blog about your industry experience?', answer:'try'}
-  ]
-);
+  initMCQ('u8q1', [
+    {q:"'You decided to save money for a holiday a year in advance.' This shows you can:", options:["think outside the box","set goals","be reliable","use critical thinking"], answer:"set goals"},
+    {q:"'You carefully checked information you found online before using it.' This shows:", options:["determination","reliability","critical thinking","a can-do attitude"], answer:"critical thinking"},
+    {q:"'You completed a very difficult project without complaining.' This shows:", options:["resourcefulness","set goals","a can-do attitude","critical thinking"], answer:"a can-do attitude"},
+    {q:"Which of these is a transferable skill?", options:["knowing only one specific piece of software","speaking only your native language","adaptability across different roles and tasks","working only in one industry"], answer:"adaptability across different roles and tasks"}
+  ]);
 
-initMCQ('u8q2', [
-  {q:"Why don't you ___ an email to some companies?", options:["send","to send","sending","sent"], answer:"send"},
-  {q:"How about ___ your own website to show your skills?", options:["set up","to set up","setting up","sets up"], answer:"setting up"},
-  {q:"You should ___ the companies you're interested in.", options:["researching","to research","research","researched"], answer:"research"},
-  {q:"Why not try ___ a video for your LinkedIn profile?", options:["make","to make","making","makes"], answer:"making"},
-  {q:"You ought ___ spend some time improving your online profile.", options:["spend","to spend","spending","to spending"], answer:"to spend"}
-]);
+  initFill('u8f2',
+    ['should','could','Why','How','ought to','try'],
+    [
+      {text:'You ___ update your CV with more specific examples from your experience.', answer:'should'},
+      {text:'You ___ ask your teacher for help with your online profile.', answer:'could'},
+      {text:"___ don't you join some professional networking groups online?", answer:'Why'},
+      {text:'___ about volunteering to show your transferable skills?', answer:'How'},
+      {text:'You ___ include examples from your personal life as well.', answer:'ought to'},
+      {text:'Why not ___ writing a blog about your industry experience?', answer:'try'}
+    ]
+  );
 
-initMatch('u8m2', [
-  {left:'Good morning. How are you enjoying the fair?', right:'starting a conversation'},
-  {left:'That sounds really interesting.', right:'showing interest in what someone says'},
-  {left:"It's been really nice talking to you.", right:'closing a conversation politely'},
-  {left:'Could I ask you a few questions about your company?', right:'politely requesting more time to speak'},
-  {left:'Right. Uh-huh.', right:'giving brief signals that you are listening'},
-  {left:'Thank you for your time. I really appreciate it.', right:'ending the conversation with thanks'}
-]);
+  initMCQ('u8q2', [
+    {q:"Why don't you ___ an email to some companies?", options:["send","to send","sending","sent"], answer:"send"},
+    {q:"How about ___ your own website to show your skills?", options:["set up","to set up","setting up","sets up"], answer:"setting up"},
+    {q:"You should ___ the companies you're interested in.", options:["researching","to research","research","researched"], answer:"research"},
+    {q:"Why not try ___ a video for your LinkedIn profile?", options:["make","to make","making","makes"], answer:"making"},
+    {q:"You ought ___ spend some time improving your online profile.", options:["spend","to spend","spending","to spending"], answer:"to spend"}
+  ]);
 
-initMCQ('u8q3', [
-  {q:"To 'build rapport' with a new colleague means to:", options:["ask them for advice","develop a friendly, comfortable relationship","test their knowledge","give them feedback"], answer:"develop a friendly, comfortable relationship"},
-  {q:"A job requiring creative, unconventional thinking needs someone who can:", options:["be reliable","set goals","think outside the box","be authentic"], answer:"think outside the box"},
-  {q:"Which phrase is used to CLOSE a networking conversation?", options:["Good morning. How are you enjoying the event?","Could I ask you a few questions?","Tell me more about your role.","It's been really nice talking to you."], answer:"It's been really nice talking to you."},
-  {q:"If a job ad says 'must be reliable', the employer wants someone who:", options:["is always enthusiastic","can work alone","can always be counted on","sets high goals"], answer:"can always be counted on"}
-]);
+  initMatch('u8m2', [
+    {left:'Good morning. How are you enjoying the fair?', right:'starting a conversation'},
+    {left:'That sounds really interesting.', right:'showing interest in what someone says'},
+    {left:"It's been really nice talking to you.", right:'closing a conversation politely'},
+    {left:'Could I ask you a few questions about your company?', right:'politely requesting more time to speak'},
+    {left:'Right. Uh-huh.', right:'giving brief signals that you are listening'},
+    {left:'Thank you for your time. I really appreciate it.', right:'ending the conversation with thanks'}
+  ]);
 
-// --- UNIT 10: BUSINESS SECTORS ---
-initMatch('u9m1', [
-  {left:'Primary sector', right:'working directly with natural resources like agriculture and mining'},
-  {left:'Secondary sector', right:'using raw materials to manufacture and build products'},
-  {left:'Tertiary sector', right:'the service sector, including retail, tourism and finance'},
-  {left:'automotive industry', right:'makes and sells cars and other vehicles'},
-  {left:'retail industry', right:'sells products directly to consumers in shops'},
-  {left:'manufacturing', right:'the process of making goods in large quantities in factories'}
-]);
+  initMCQ('u8q3', [
+    {q:"To 'build rapport' with a new colleague means to:", options:["ask them for advice","develop a friendly, comfortable relationship","test their knowledge","give them feedback"], answer:"develop a friendly, comfortable relationship"},
+    {q:"A job requiring creative, unconventional thinking needs someone who can:", options:["be reliable","set goals","think outside the box","be authentic"], answer:"think outside the box"},
+    {q:"Which phrase is used to CLOSE a networking conversation?", options:["Good morning. How are you enjoying the event?","Could I ask you a few questions?","Tell me more about your role.","It's been really nice talking to you."], answer:"It's been really nice talking to you."},
+    {q:"If a job ad says 'must be reliable', the employer wants someone who:", options:["is always enthusiastic","can work alone","can always be counted on","sets high goals"], answer:"can always be counted on"}
+  ]);
 
-initFill('u9f1',
-  ['service sector','automotive','manufacturing','retail','transportation'],
-  [
-    {text:"Japan's ___, which includes finance, trade, tourism and entertainment, is the largest part of its economy.", answer:'service sector'},
-    {text:'The ___ industry, which makes and sells cars and vehicles, has been particularly successful in Japan.', answer:'automotive'},
-    {text:'Furniture makers, steel factories and textile mills are all part of the ___ sector.', answer:'manufacturing'},
-    {text:'Clothes shops, restaurants and supermarkets are all part of the ___ industry.', answer:'retail'},
-    {text:'Airlines, courier services and ports are all part of the ___ industry.', answer:'transportation'}
-  ]
-);
+  // --- UNIT 10: BUSINESS SECTORS ---
+  initMatch('u9m1', [
+    {left:'Primary sector', right:'working directly with natural resources like agriculture and mining'},
+    {left:'Secondary sector', right:'using raw materials to manufacture and build products'},
+    {left:'Tertiary sector', right:'the service sector, including retail, tourism and finance'},
+    {left:'automotive industry', right:'makes and sells cars and other vehicles'},
+    {left:'retail industry', right:'sells products directly to consumers in shops'},
+    {left:'manufacturing', right:'the process of making goods in large quantities in factories'}
+  ]);
 
-initMCQ('u9q1', [
-  {q:"A bank, a credit card company and an insurance agent all belong to:", options:["Primary sector","Secondary sector","Tertiary sector","Manufacturing sector"], answer:"Tertiary sector"},
-  {q:"Coal mining, gas extraction and oil drilling belong to:", options:["Tertiary sector","Secondary sector","Primary sector","Automotive sector"], answer:"Primary sector"},
-  {q:"A furniture maker, a steel factory and a textile manufacturer belong to:", options:["Primary sector","Secondary sector","Tertiary sector","Service sector"], answer:"Secondary sector"},
-  {q:"The term 'service sector' refers to the same sector as:", options:["Primary sector","Secondary sector","Tertiary sector","Manufacturing sector"], answer:"Tertiary sector"}
-]);
+  initFill('u9f1',
+    ['service sector','automotive','manufacturing','retail','transportation'],
+    [
+      {text:"Japan's ___, which includes finance, trade, tourism and entertainment, is the largest part of its economy.", answer:'service sector'},
+      {text:'The ___ industry, which makes and sells cars and vehicles, has been particularly successful in Japan.', answer:'automotive'},
+      {text:'Furniture makers, steel factories and textile mills are all part of the ___ sector.', answer:'manufacturing'},
+      {text:'Clothes shops, restaurants and supermarkets are all part of the ___ industry.', answer:'retail'},
+      {text:'Airlines, courier services and ports are all part of the ___ industry.', answer:'transportation'}
+    ]
+  );
 
-initFill('u9f2',
-  ['shared','heard','decided','flew','found'],
-  [
-    {text:'Joe and Brian ___ an apartment together in San Francisco in 2007.', answer:'shared'},
-    {text:'When they ___ a design conference was coming to the city, the hotels were fully booked.', answer:'heard'},
-    {text:'They ___ to offer their flat as cheap accommodation to the conference participants.', answer:'decided'},
-    {text:'They ___ to New York because that was where most of their customers were.', answer:'flew'},
-    {text:'They soon ___ three paying guests who slept on airbeds in their living room.', answer:'found'}
-  ]
-);
+  initMCQ('u9q1', [
+    {q:"A bank, a credit card company and an insurance agent all belong to:", options:["Primary sector","Secondary sector","Tertiary sector","Manufacturing sector"], answer:"Tertiary sector"},
+    {q:"Coal mining, gas extraction and oil drilling belong to:", options:["Tertiary sector","Secondary sector","Primary sector","Automotive sector"], answer:"Primary sector"},
+    {q:"A furniture maker, a steel factory and a textile manufacturer belong to:", options:["Primary sector","Secondary sector","Tertiary sector","Service sector"], answer:"Secondary sector"},
+    {q:"The term 'service sector' refers to the same sector as:", options:["Primary sector","Secondary sector","Tertiary sector","Manufacturing sector"], answer:"Tertiary sector"}
+  ]);
 
-initMCQ('u9q2', [
-  {q:"She ___ IT when she started her first business. (background ongoing action)", options:["was studying","studied","is studying","has studied"], answer:"was studying"},
-  {q:"He told me he wanted to quit his job while we ___ lunch. (simultaneous action)", options:["had","have","were having","are having"], answer:"were having"},
-  {q:"While I ___ the slides, the electricity suddenly went out. (interrupted action)", options:["presented","was presenting","am presenting","have presented"], answer:"was presenting"},
-  {q:"We got tired so we ___ to have a break. (completed, single decision)", options:["are deciding","were deciding","decided","have decided"], answer:"decided"},
-  {q:"When I ___ to the office, everyone was already working. (completed arrival)", options:["got","was getting","am getting","have gotten"], answer:"got"}
-]);
+  initFill('u9f2',
+    ['shared','heard','decided','flew','found'],
+    [
+      {text:'Joe and Brian ___ an apartment together in San Francisco in 2007.', answer:'shared'},
+      {text:'When they ___ a design conference was coming to the city, the hotels were fully booked.', answer:'heard'},
+      {text:'They ___ to offer their flat as cheap accommodation to the conference participants.', answer:'decided'},
+      {text:'They ___ to New York because that was where most of their customers were.', answer:'flew'},
+      {text:'They soon ___ three paying guests who slept on airbeds in their living room.', answer:'found'}
+    ]
+  );
 
-initMatch('u9m2', [
-  {left:'Sorry to interrupt.', right:'asking permission to interrupt'},
-  {left:'Please go ahead.', right:'accepting an interruption'},
-  {left:'Can I just finish my point?', right:'preventing an interruption'},
-  {left:'So, as I was saying...', right:'going back to an earlier point'},
-  {left:'Excuse me for interrupting.', right:'apologising before making an interruption'},
-  {left:'What did you want to say?', right:'inviting someone else to speak'}
-]);
+  initMCQ('u9q2', [
+    {q:"She ___ IT when she started her first business. (background ongoing action)", options:["was studying","studied","is studying","has studied"], answer:"was studying"},
+    {q:"He told me he wanted to quit his job while we ___ lunch. (simultaneous action)", options:["had","have","were having","are having"], answer:"were having"},
+    {q:"While I ___ the slides, the electricity suddenly went out. (interrupted action)", options:["presented","was presenting","am presenting","have presented"], answer:"was presenting"},
+    {q:"We got tired so we ___ to have a break. (completed, single decision)", options:["are deciding","were deciding","decided","have decided"], answer:"decided"},
+    {q:"When I ___ to the office, everyone was already working. (completed arrival)", options:["got","was getting","am getting","have gotten"], answer:"got"}
+  ]);
 
-initMCQ('u9q3', [
-  {q:"When leaving a voicemail, what should you do first?", options:["Give the reason for your call","Identify yourself","Provide your phone number","Say goodbye"], answer:"Identify yourself"},
-  {q:"Which phrase is best for ending a voicemail message?", options:["I'm calling about the meeting.","This is Tom from ABC company.","I look forward to hearing from you.","My number is 0800 123 456."], answer:"I look forward to hearing from you."},
-  {q:"'Could you call me back on my mobile?' This phrase is used to:", options:["Identify yourself","State the reason for the call","Offer an alternative contact method","Provide a deadline"], answer:"Offer an alternative contact method"},
-  {q:"'Could you get back to me by Monday?' This phrase is used to:", options:["Give your contact details","Provide a deadline","Close the message","State the reason for the call"], answer:"Provide a deadline"}
-]);
+  initMatch('u9m2', [
+    {left:'Sorry to interrupt.', right:'asking permission to interrupt'},
+    {left:'Please go ahead.', right:'accepting an interruption'},
+    {left:'Can I just finish my point?', right:'preventing an interruption'},
+    {left:'So, as I was saying...', right:'going back to an earlier point'},
+    {left:'Excuse me for interrupting.', right:'apologising before making an interruption'},
+    {left:'What did you want to say?', right:'inviting someone else to speak'}
+  ]);
+
+  initMCQ('u9q3', [
+    {q:"When leaving a voicemail, what should you do first?", options:["Give the reason for your call","Identify yourself","Provide your phone number","Say goodbye"], answer:"Identify yourself"},
+    {q:"Which phrase is best for ending a voicemail message?", options:["I'm calling about the meeting.","This is Tom from ABC company.","I look forward to hearing from you.","My number is 0800 123 456."], answer:"I look forward to hearing from you."},
+    {q:"'Could you call me back on my mobile?' This phrase is used to:", options:["Identify yourself","State the reason for the call","Offer an alternative contact method","Provide a deadline"], answer:"Offer an alternative contact method"},
+    {q:"'Could you get back to me by Monday?' This phrase is used to:", options:["Give your contact details","Provide a deadline","Close the message","State the reason for the call"], answer:"Provide a deadline"}
+  ]);
+}
 
 
 // ======================================================
